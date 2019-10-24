@@ -75,3 +75,81 @@ After the deployment is successful, you would be notified through Azure notifica
 
 <a name="buildconsortium"></a>
 ### Build the consortium
+To build the blockchain consortium post deploying the ordering service and peer nodes, you will have to carry out the below steps in sequence. Build Your Network(byn.sh) script will help you with setting up the consortium, creating channel and installing chaincode.
+
+*Note: Build Your Network script provided is strictly to be used for demo/devtest scenarios. For production grade setup we recommend using the native HLF APIs*
+
+All the commands to run the byn script can be executed through Azure Bash CLI. You can login into Azure shell web version through the option at the top right corner of the Azure portal. Once the command prompt comes up, type bash and enter to switch to bash CLI.
+
+Download "byn.sh" and "fabric-admin.yaml" file from the gitrepo and upload it on Azure CLI. The files will be upload in you home directory. Go to you home directory.
+
+```
+cd ~
+```
+
+Set the below enviornment variables on the shell
+```
+CHANNEL_NAME=<channelName>
+ORDERER_END_POINT="orderer1.<ordererDNSZone>:443"
+```
+
+Create one Azure File share to share various public certificates among peer(s) and orderer organizations.
+```
+SUBSCRIPTION=<subscriptionId>
+RESOURCE_GROUP=<azureFileShareResourceGroup>
+STORAGE_ACCOUNT=<azureStorageAccountName>
+STORAGE_LOCATION=<azureStorageAccountLocation>
+STORAGE_FILE_SHARE=<azureFileShareName>
+
+az account set --subscription $SUBSCRIPTION
+az group create -l $STORAGE_LOCATION -n $RESOURCE_GROUP
+az storage account create -n $STORAGE_ACCOUNT -g  $RESOURCE_GROUP -l $STORAGE_LOCATION --sku Standard_LRS
+STORAGE_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP  --account-name $STORAGE_ACCOUNT --query "[0].value" | tr -d '"')
+az storage share create  --account-name $STORAGE_ACCOUNT  --account-key $STORAGE_KEY  --name $STORAGE_FILE_SHARE
+SAS_TOKEN=$(az storage account generate-sas --account-key $STORAGE_KEY --account-name $STORAGE_ACCOUNT --expiry 2020-01-01 --https-only --permissions lruw --resource-types sco --services f | tr -d '"')
+AZURE_FILE_STORAGE_URI="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE"
+```
+
+##### 1. Channel Managment Commands
+Go to orderer organization AKS cluster and issue command to create a new channel
+
+```
+SWITCH_TO_AKS_CLUSTER <ordererOrg-AKS-Resource-group> <ordererOrg-AKS-Cluster-Name>
+
+./byn.sh createChannel "$CHANNEL_NAME"
+```
+
+##### 2. Consortium Managment Commands
+Execute below commands in the given order to add a peer organization in a channel and consortium
+
+Step 1:- Go to Peer Organization AKS Cluster and upload its MSP on a Azure File Storage
+```
+SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
+./byn.sh uploadOrgMSP "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+```
+  
+Step 2:- Go to orderer Organization AKS cluster and add the peer organization in a consortium
+```
+SWITCH_TO_AKS_CLUSTER <ordererOrg-AKS-Resource-group> <ordererOrg-AKS-Cluster-Name>
+PEER_ORG_NAME=<peer-organization-name>
+./byn.sh addPeerInConsortium "$PEER_ORG_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh addPeerInChannel "$PEER_ORG_NAME" "$CHANNEL_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+```
+
+Step 3:- Go back to peer organization and add issue command to join peer nodes in the channel
+```
+SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
+./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+```
+
+##### 3. Chaincode managment commands
+Execute below command to perform chaincode related operation. These commands are to be executed on the peer organization AKS cluster.
+
+```
+SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
+PEER_ORG_NAME="peer<peer#>"
+./byn.sh installDemoChaincode "$PEER_NODE_NAME"
+./byn.sh instantiateDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh queryDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME"
+```
