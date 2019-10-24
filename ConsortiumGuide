@@ -1,0 +1,7 @@
+#Build Consortium 
+To build the blockchain consortium post deploying the ordering service and peer nodes, you will have to carry out the below steps in sequence. Build Your Network(byn) script available here, will help you with setting up the consortium, creating channel and installing chaincode. 
+Note: Build Your Network script provided is strictly to be used for demo/devtest scenarios. For production grade setup we recommend using the native HLF APIs 
+Sample consortium details: the below steps are to build a consortium with an ordering service with 3 nodes and a peer organization with 2 nodes, both sharing a channel “testchannel”  
+## Step 1: 
+Create the ordering service with 3 nodes using the Azure Blockchain for Hyperledger Fabric(AKS based) marketplace offering as per the steps provided in section Deploy orderer/peer nodes above.
+Create peer org1 with 2 nodes using the marketplace offering in peer org1’s Azure subscription. Create peer org2 with 2 nodes using the marketplace offering in peer org2’s Azure subscription. For dev-test scenarios you can create all 3 orgs in the same subscription. 
