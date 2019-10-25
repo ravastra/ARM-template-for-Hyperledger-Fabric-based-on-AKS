@@ -86,7 +86,9 @@ PS Azure:\> cd ~
 PS /home/shruti>
 ```
 
-Set the below enviornment variables on the shell
+Set below environment variable on Azure CLI Bash shell:
+
+set channel information and orderer organization information
 ```bash
 SWITCH_TO_AKS_CLUSTER() { az aks get-credentials --resource-group $1 --name $2 --subscription $3; }
 ORDERER_AKS_SUBSCRIPTION=<ordererAKSClusterSubscriptionID>
@@ -95,11 +97,15 @@ ORDERER_AKS_NAME=<ordererAKSClusterName>
 ORDERER_DNS_ZONE=<ordererDNSZone>
 ORDERER_END_POINT="orderer1.$ORDERER_DNS_ZONE:443"
 CHANNEL_NAME=<channelName>
+```
+<a name="peer-aks"></a>
+set peer organization information
+```bash
 PEER_AKS_RESOURCE_GROUP=<peerAKSClusterResourceGroup>
 PEER_AKS_NAME=<peerAKSClusterName>
 PEER_AKS_SUBSCRIPTION_ID=<peerAKSClusterSubscriptionID>
 PEER_ORG_NAME=<peerOrganizationName>
-```
+````
 
 Create one Azure File share to share various public certificates among peer and orderer organizations.
 ```bash
@@ -147,7 +153,7 @@ Step 3:- Go back to peer organization and issue command to join peer nodes in th
 SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
 ./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
-Similarly, to add more peer organization in the channel, update peer AKS variables to point to AKS Cluster of that peer organization and executed step 1 to 3.
+Similarly, to add more peer organization in the channel, update [peer AKS variables](#peer-aks) to point to AKS cluster of that peer organization and executed step 1 to 3.
 
 #### 3. Chaincode managment commands
 Execute below command to perform chaincode related operation. These commands are to be executed on the peer organization AKS cluster.
