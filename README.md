@@ -9,7 +9,7 @@ Post deployment a script is provided to create consortium, create channel, insta
 <a name="onboarding"></a>
 ## 1. Onboarding to Preview
 The Azure Blockchain for Hyperledger Fabric (AKS based) template is enabled in Azure Marketplace for private preview customers only. Customers whose subscriptions are whitelisted by Microsoft team will be able to access the template. 
-To get yourself onboarded to the private preview please mail your subscription ID details along with your organization details to azbchlf@microsoft.com 
+To get yourself onboarded to the private preview please mail your subscription ID details along with your organization details to Azure Blockchain HLF team at azbchlf@microsoft.com 
 
 <a name="support"></a>
 ## 2. Support Forum
@@ -74,7 +74,7 @@ After the deployment is successful, you would be notified through Azure notifica
 ### Build the consortium
 To build the blockchain consortium post deploying the ordering service and peer nodes, you will have to carry out the below steps in sequence. Build Your Network script ([byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh)) will help you with setting up the consortium, creating channel and installing chaincode.
 
-*Note: Build Your Network script provided is strictly to be used for demo/devtest scenarios. For production grade setup we recommend using the native HLF APIs*
+#### *Note: Build Your Network (byn) script provided is strictly to be used for demo/devtest scenarios. For production grade setup we recommend using the native HLF APIs*
 
 All the commands to run the byn script can be executed through Azure Bash CLI. You can login into Azure shell web version through <img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/azureCLI_Icon.png" width="35" height="35" /> option at the top right corner of the Azure portal. Once the command prompt comes up, type bash and enter to switch to bash CLI.
 
