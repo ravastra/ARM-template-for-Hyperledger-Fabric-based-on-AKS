@@ -145,10 +145,12 @@ SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIP
 ./byn.sh uploadOrgMSP "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
   
-Step 2:- Go to orderer Organization AKS cluster and add the peer organization in a consortium
+Step 2:- Go to orderer Organization AKS cluster and add the peer organization in channel and consortium
 ```bash
 SWITCH_TO_AKS_CLUSTER $ORDERER_AKS_RESOURCE_GROUP $ORDERER_AKS_NAME $ORDERER_AKS_SUBSCRIPTION
+# add peer in consortium
 ./byn.sh addPeerInConsortium "$PEER_ORG_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+# add peer in channel
 ./byn.sh addPeerInChannel "$PEER_ORG_NAME" "$CHANNEL_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
 
