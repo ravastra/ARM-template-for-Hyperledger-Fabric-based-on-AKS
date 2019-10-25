@@ -79,11 +79,12 @@ To build the blockchain consortium post deploying the ordering service and peer 
 
 All the commands to run the byn script can be executed through Azure Bash CLI. You can login into Azure shell web version through the option at the top right corner of the Azure portal. Once the command prompt comes up, type bash and enter to switch to bash CLI.
 
-Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file from the gitrepo and upload it on Azure CLI. The files will be upload in you home directory. Go to you home directory.
+Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file.
 
 ```console
 PS Azure:\> cd ~
-PS /home/shruti>
+PS /home/shruti> curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh > byn.sh
+PS /home/shruti> curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/deployments/fabric-admin.yaml > fabric-admin.yaml
 ```
 
 Set below environment variable on Azure CLI Bash shell:
