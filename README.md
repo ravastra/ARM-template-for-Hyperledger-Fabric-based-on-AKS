@@ -84,8 +84,8 @@ All the commands to run the byn script can be executed through Azure Bash CLI. Y
 Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file.
 
 ```console
-shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh -o byn.sh;  chmod 777 byn.sh
-shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml -o fabric-admin.yaml
+user@Azure:~$ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh -o byn.sh; chmod 777 byn.sh
+user@Azure:~$ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml -o fabric-admin.yaml
 ```
 
 Set below environment variable on Azure CLI Bash shell:
@@ -161,7 +161,9 @@ SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIP
 Similarly, to add more peer organization in the channel, update [peer AKS variables](#peer-aks) as per the required peer organization and executed step 1 to 3.
 
 #### 3. Chaincode managment commands
-Execute below command to perform chaincode related operation. These commands are to be executed on the peer organization AKS cluster.
+Execute below command to perform chaincode related operation. These commands do all operation on a demo chaincode. This demo chaincode has two variable "a" and "b". On invoking the chaincode, "a" is initialized with 100 and "b" is initialized with 200. On each invocation of demo chaincode, 10 units are tranferred from "a" to "b". Query operation on chaincode shows the world state of "a".
+
+These commands are to be executed on the peer organization AKS cluster.
 
 ```bash
 # switch to peer organization AKS cluster. Skip this command if already connected to the required Peer AKS Cluster
