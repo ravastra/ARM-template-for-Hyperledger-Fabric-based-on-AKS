@@ -73,11 +73,14 @@ After the deployment is successful, you would be notified through Azure notifica
 
 <a name="buildconsortium"></a>
 ### Build the consortium
-To build the blockchain consortium post deploying the ordering service and peer nodes, you will have to carry out the below steps in sequence. Build Your Network(byn.sh) script will help you with setting up the consortium, creating channel and installing chaincode.
+To build the blockchain consortium post deploying the ordering service and peer nodes, you will have to carry out the below steps in sequence. Build Your Network script ([byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh)) will help you with setting up the consortium, creating channel and installing chaincode.
 
 *Note: Build Your Network script provided is strictly to be used for demo/devtest scenarios. For production grade setup we recommend using the native HLF APIs*
 
-All the commands to run the byn script can be executed through Azure Bash CLI. You can login into Azure shell web version through the option at the top right corner of the Azure portal. Once the command prompt comes up, type bash and enter to switch to bash CLI.
+All the commands to run the byn script can be executed through Azure Bash CLI. You can login into Azure shell web version through <img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/azureCLI_Icon.png" width="35" height="35" /> option at the top right corner of the Azure portal. Once the command prompt comes up, type bash and enter to switch to bash CLI.
+
+<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/azureCLI.PNG" />
+
 
 Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file.
 
