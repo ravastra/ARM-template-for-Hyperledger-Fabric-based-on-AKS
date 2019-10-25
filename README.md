@@ -85,8 +85,8 @@ All the commands to run the byn script can be executed through Azure Bash CLI. Y
 Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file.
 
 ```console
-shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh > byn.sh
-shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml > fabric-admin.yaml
+shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh -o byn.sh;  chmod 777 byn.sh
+shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml -o fabric-admin.yaml
 ```
 
 Set below environment variable on Azure CLI Bash shell:
