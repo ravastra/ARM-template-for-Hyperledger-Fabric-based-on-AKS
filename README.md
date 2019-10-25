@@ -86,7 +86,7 @@ Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabri
 
 ```console
 shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh > byn.sh
-shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/deployments/fabric-admin.yaml > fabric-admin.yaml
+shruti@Azure:~$ curl https://raw.githubusercontent.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml > fabric-admin.yaml
 ```
 
 Set below environment variable on Azure CLI Bash shell:
