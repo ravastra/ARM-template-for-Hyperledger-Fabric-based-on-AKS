@@ -84,11 +84,11 @@ All the commands to run the byn script can be executed through Azure Bash CLI. Y
 Download [byn.sh](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/byn.sh) and [fabric-admin.yaml](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/deployments/fabric-admin.yaml) file.
 
 ```console
-user@Azure:~$ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh -o byn.sh; chmod 777 byn.sh
-user@Azure:~$ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml -o fabric-admin.yaml
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/byn.sh -o byn.sh; chmod 777 byn.sh
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/master/fabric-admin.yaml -o fabric-admin.yaml
 ```
 
-Set below environment variable on Azure CLI Bash shell:
+Set below environment variables on Azure CLI Bash shell:
 
 set channel information and orderer organization information
 ```bash
@@ -121,10 +121,10 @@ STORAGE_FILE_SHARE=<azureFileShareName>
 az account set --subscription $STORAGE_SUBSCRIPTION
 az group create -l $STORAGE_LOCATION -n $STORAGE_RESOURCE_GROUP
 az storage account create -n $STORAGE_ACCOUNT -g  $STORAGE_RESOURCE_GROUP -l $STORAGE_LOCATION --sku Standard_LRS
-STORAGE_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP  --account-name $STORAGE_ACCOUNT --query "[0].value" | tr -d '"')
+STORAGE_KEY=$(az storage account keys list --resource-group $STORAGE_RESOURCE_GROUP  --account-name $STORAGE_ACCOUNT --query "[0].value" | tr -d '"')
 az storage share create  --account-name $STORAGE_ACCOUNT  --account-key $STORAGE_KEY  --name $STORAGE_FILE_SHARE
 SAS_TOKEN=$(az storage account generate-sas --account-key $STORAGE_KEY --account-name $STORAGE_ACCOUNT --expiry 2020-01-01 --https-only --permissions lruw --resource-types sco --services f | tr -d '"')
-AZURE_FILE_STORAGE_URI="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE"
+AZURE_FILE_CONNECTION_STRING="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE?$SAS_TOKEN"
 ```
 
 #### 1. Channel Managment Commands
@@ -141,27 +141,27 @@ Execute below commands in the given order to add a peer organization in a channe
 Step 1:- Go to Peer Organization AKS Cluster and upload its MSP on a Azure File Storage
 ```bash
 SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
-./byn.sh uploadOrgMSP "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh uploadOrgMSP "$AZURE_FILE_CONNECTION_STRING"
 ```
   
 Step 2:- Go to orderer Organization AKS cluster and add the peer organization in channel and consortium
 ```bash
 SWITCH_TO_AKS_CLUSTER $ORDERER_AKS_RESOURCE_GROUP $ORDERER_AKS_NAME $ORDERER_AKS_SUBSCRIPTION
 # add peer in consortium
-./byn.sh addPeerInConsortium "$PEER_ORG_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh addPeerInConsortium "$PEER_ORG_NAME" "$AZURE_FILE_CONNECTION_STRING"
 # add peer in channel
-./byn.sh addPeerInChannel "$PEER_ORG_NAME" "$CHANNEL_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh addPeerInChannel "$PEER_ORG_NAME" "$CHANNEL_NAME" "$AZURE_FILE_CONNECTION_STRING"
 ```
 
 Step 3:- Go back to peer organization and issue command to join peer nodes in the channel
 ```bash
 SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
-./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
 ```
-Similarly, to add more peer organization in the channel, update [peer AKS variables](#peer-aks) as per the required peer organization and executed step 1 to 3.
+Similarly, to add more peer organization in the channel, update [peer AKS environment variables](#peer-aks) as per the required peer organization and executed step 1 to 3.
 
 #### 3. Chaincode managment commands
-Execute below command to perform chaincode related operation. These commands do all operation on a demo chaincode. This demo chaincode has two variable "a" and "b". On invoking the chaincode, "a" is initialized with 100 and "b" is initialized with 200. On each invocation of demo chaincode, 10 units are tranferred from "a" to "b". Query operation on chaincode shows the world state of "a".
+Execute below command to perform chaincode related operation. These commands perform all operation on a demo chaincode. This demo chaincode has two variable "a" and "b". On instantion of the chaincode, "a" is initialized with 1000 and "b" is initialized with 2000. On each invocation of the chaincode, 10 units are tranferred from "a" to "b". Query operation on chaincode shows the world state of "a" variable.
 
 These commands are to be executed on the peer organization AKS cluster.
 
@@ -172,7 +172,7 @@ SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIP
 # chaincode operation commands
 PEER_NODE_NAME="peer<peer#>"
 ./byn.sh installDemoChaincode "$PEER_NODE_NAME"
-./byn.sh instantiateDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
-./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
+./byn.sh instantiateDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
+./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
 ./byn.sh queryDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME"
 ```
