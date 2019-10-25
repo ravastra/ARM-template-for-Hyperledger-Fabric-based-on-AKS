@@ -54,7 +54,7 @@ downloadPeerMSP() {
   mspURI="$FileShare/${PEER_ORG_NAME}/msp?$SASToken"
   azcopy copy $mspURI $localPath --recursive &> $LOG_FILE
   res=$?
-  verifyResult $res "Downloading ${PEER_ORG_NAME} MSP from ${FileShare} failed!!"
+  verifyResult $res "Downloading ${PEER_ORG_NAME} MSP from '${FileShare}' failed!!"
   echo
   echo "===================== ${PEER_ORG_NAME} MSP downloaded from '${FileShare}' ===================== "
   echo
@@ -152,7 +152,7 @@ handleInstantiateChaincode() {
   setPeerGlobals $PEER
 
   set -x
-  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' &> $LOG_FILE
+  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","1000","b","2000"]}' &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Chaincode instantiation on peer${PEER} of org ${HLF_ORG_NAME} on channel '$CHANNEL_NAME' failed"
