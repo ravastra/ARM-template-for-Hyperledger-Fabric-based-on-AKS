@@ -161,7 +161,7 @@ SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIP
 Similarly, to add more peer organization in the channel, update [peer AKS environment variables](#peer-aks) as per the required peer organization and executed step 1 to 3.
 
 #### 3. Chaincode managment commands
-Execute below command to perform chaincode related operation. These commands perform all operation on a demo chaincode. This demo chaincode has two variable "a" and "b". On instantiation of the chaincode, "a" is initialized with 1000 and "b" is initialized with 2000. On each invocation of the chaincode, 10 units are tranferred from "a" to "b". Query operation on chaincode shows the world state of "a" variable.
+Execute below command to perform chaincode related operation. These commands perform all operation on a demo chaincode. This demo chaincode has two variable "a" and "b". On instantiation of the chaincode, "a" is initialized with 100 and "b" is initialized with 200. On each invocation of the chaincode, 10 units are tranferred from "a" to "b". Query operation on chaincode shows the world state of "a" variable.
 
 These commands are to be executed on the peer organization AKS cluster.
 
