@@ -156,7 +156,7 @@ Step 3:- Go back to peer organization and issue command to join peer nodes in th
 SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
 ./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
-Similarly, to add more peer organization in the channel, update [peer AKS variables](#peer-aks) to point to AKS cluster of that peer organization and executed step 1 to 3.
+Similarly, to add more peer organization in the channel, update [peer AKS variables](#peer-aks) as per the required peer organization and executed step 1 to 3.
 
 #### 3. Chaincode managment commands
 Execute below command to perform chaincode related operation. These commands are to be executed on the peer organization AKS cluster.
