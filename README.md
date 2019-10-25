@@ -28,7 +28,8 @@ The Fabric deployment through this template mainly involves 2 major steps
 To get started with the HLF network components deployment, navigate to Azure portal marketplace offering link here https://aka.ms/hlf
 
 1. Click on create to start the template deployment 
-![alt text](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Firstpage.png)
+
+<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Firstpage.png" width="800" height="500" />
 
 
 2. Provide the input parameters in the Basics tab 
@@ -37,8 +38,7 @@ To get started with the HLF network components deployment, navigate to Azure por
 - **Region:** Choose the Azure region where you want to deploy the Azure Kubernetes cluster for the HLF components
 - **Resource prefix:** Prefix for naming of resources that will be deployed. This should be less than 6 characters in length, including lower case alpha and numbers only.
 
-![alt text](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Basics.png)
-
+<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Basics.png" width="700" height="625" />
 
 3.	The next set of input parameters define the HLF network component that will be deployed 
 - **Organization name:** The name of the HLF organization, this is required for various data plane activities 
@@ -48,8 +48,7 @@ To get started with the HLF network components deployment, navigate to Azure por
 - **HLF username:** Provide the username that can be used for the HLF network component created 
 - **HLF CA password:** Provide a password that will be used for HLF authentication for the username provided earlier
 
-![alt text](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_HLFSettings.png)
-
+<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_HLFSettings.png" width="700" height="625" />
 
 4. The next set of input parameters define the Azure Kubernetes cluster configuration which is the underlying infrastructure on which the HLF network components will be setup 
 - **Kubernetes cluster name:** The name of the AKS cluster that will be created, this field will be prepopulated based on the inputs given earlier, you can change if required 
@@ -62,8 +61,7 @@ To get started with the HLF network components deployment, navigate to Azure por
 - **Enable monitoring:** You can choose to enable AKS monitoring, in which case the AKS logs will be pushed to the Log Analytics workspace specified
 - **Log Analytics workspace:** This is prepopulated with the default workspace that will be created if monitoring is enabled 
 
-![alt text](https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_AKSClusterSettings.png)
-
+<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_AKSClusterSettings.png" width="700" height="625" />
 
 5. After providing all the input parameters click on Review and create, this will trigger validation of the input parameters provided, once the validation passes, you can click create. 
 The deployment usually takes 10-12 minutes, might vary depending on the size and number of AKS nodes specified. 
@@ -83,18 +81,19 @@ All the commands to run the byn script can be executed through Azure Bash CLI. Y
 
 Download "byn.sh" and "fabric-admin.yaml" file from the gitrepo and upload it on Azure CLI. The files will be upload in you home directory. Go to you home directory.
 
-```
-cd ~
+```console
+PS Azure:\> cd ~
+PS /home/shruti>
 ```
 
 Set the below enviornment variables on the shell
-```
+```bash
 CHANNEL_NAME=<channelName>
 ORDERER_END_POINT="orderer1.<ordererDNSZone>:443"
 ```
 
 Create one Azure File share to share various public certificates among peer(s) and orderer organizations.
-```
+```bash
 SUBSCRIPTION=<subscriptionId>
 RESOURCE_GROUP=<azureFileShareResourceGroup>
 STORAGE_ACCOUNT=<azureStorageAccountName>
@@ -113,9 +112,8 @@ AZURE_FILE_STORAGE_URI="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_
 ##### 1. Channel Managment Commands
 Go to orderer organization AKS cluster and issue command to create a new channel
 
-```
+```bash
 SWITCH_TO_AKS_CLUSTER <ordererOrg-AKS-Resource-group> <ordererOrg-AKS-Cluster-Name>
-
 ./byn.sh createChannel "$CHANNEL_NAME"
 ```
 
@@ -123,13 +121,13 @@ SWITCH_TO_AKS_CLUSTER <ordererOrg-AKS-Resource-group> <ordererOrg-AKS-Cluster-Na
 Execute below commands in the given order to add a peer organization in a channel and consortium
 
 Step 1:- Go to Peer Organization AKS Cluster and upload its MSP on a Azure File Storage
-```
+```bash
 SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
 ./byn.sh uploadOrgMSP "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
   
 Step 2:- Go to orderer Organization AKS cluster and add the peer organization in a consortium
-```
+```bash
 SWITCH_TO_AKS_CLUSTER <ordererOrg-AKS-Resource-group> <ordererOrg-AKS-Cluster-Name>
 PEER_ORG_NAME=<peer-organization-name>
 ./byn.sh addPeerInConsortium "$PEER_ORG_NAME" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
@@ -137,7 +135,7 @@ PEER_ORG_NAME=<peer-organization-name>
 ```
 
 Step 3:- Go back to peer organization and add issue command to join peer nodes in the channel
-```
+```bash
 SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
 ./byn.sh joinNodesInChannel "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_STORAGE_URI?$SAS_TOKEN"
 ```
@@ -145,7 +143,7 @@ SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
 ##### 3. Chaincode managment commands
 Execute below command to perform chaincode related operation. These commands are to be executed on the peer organization AKS cluster.
 
-```
+```bash
 SWITCH_TO_AKS_CLUSTER <peerOrg-AKS-Resource-group> <peerOrg-AKS-Cluster-Name>
 PEER_ORG_NAME="peer<peer#>"
 ./byn.sh installDemoChaincode "$PEER_NODE_NAME"
