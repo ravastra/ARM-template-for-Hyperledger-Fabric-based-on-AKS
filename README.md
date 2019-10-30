@@ -105,7 +105,7 @@ set peer organization information
 ```bash
 PEER_AKS_RESOURCE_GROUP=<peerAKSClusterResourceGroup>
 PEER_AKS_NAME=<peerAKSClusterName>
-PEER_AKS_SUBSCRIPTION_ID=<peerAKSClusterSubscriptionID>
+PEER_AKS_SUBSCRIPTION=<peerAKSClusterSubscriptionID>
 # Peer organization name is case sensitive. Specify exactly the same name which was provided while creating the Peer AKS Cluster.
 PEER_ORG_NAME=<peerOrganizationName>
 ````
