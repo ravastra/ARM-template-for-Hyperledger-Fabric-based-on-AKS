@@ -24,7 +24,7 @@ The Fabric deployment through this template mainly involves 2 major steps
 
 <a name="deployorganization"></a>
 ### Deploy the orderer/peer organization
-To get started with the HLF network components deployment, navigate to Azure portal marketplace offering link here https://aka.ms/hlf
+To get started with the HLF network components deployment, navigate to Azure portal marketplace and search for Hyperledger, in the results you will find "Azure Blockchain for Hyperledger Fabric (AKS)" offering, or you can use the link https://aka.ms/hlf
 
 1. Click on create to start the template deployment 
 
