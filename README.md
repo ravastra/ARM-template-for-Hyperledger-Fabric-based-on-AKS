@@ -11,6 +11,8 @@ Post deployment a script is provided to create consortium, create channel, insta
 The Azure Blockchain for Hyperledger Fabric (AKS based) template is enabled in Azure Marketplace for private preview customers only. Customers whose subscriptions are whitelisted by Microsoft team will be able to access the template. 
 To get yourself onboarded to the private preview please mail your subscription ID details along with your organization details to Azure Blockchain HLF team at azbchlf@microsoft.com 
 
+Note: The template is currently supported in EastUS, WestEurope, WestUS2, SoutheastAsia, EastUS2, NorthEurope, Australia East and UKSouth Azure regions. 
+
 <a name="support"></a>
 ## 2. Support Forum
 All the private preview customers will be added to the teams channel Azure Blockchain Previews > Hyperledger Fabric AKS template preview. Customers can send out their queries/requests on this channel, we will be able to reply to your queries daily. 
@@ -34,7 +36,7 @@ To get started with the HLF network components deployment, navigate to Azure por
 2. Provide the input parameters in the Basics tab 
 - **Subscription:** Choose the subscription name where you want to deploy the HLF network components
 - **Resource Group:** Either create a new resource group or choose an existing empty resource group, this resource group will hold all resources deployed as part of the this template 
-- **Region:** Choose the Azure region where you want to deploy the Azure Kubernetes cluster for the HLF components
+- **Region:** Choose the Azure region where you want to deploy the Azure Kubernetes cluster for the HLF components. The template is currently supported in EastUS, WestEurope, WestUS2, SoutheastAsia, EastUS2, NorthEurope, Australia East and UKSouth Azure regions. Please make sure to choose a region where your subscription is not hitting the VM quota limit. 
 - **Resource prefix:** Prefix for naming of resources that will be deployed. This should be less than 6 characters in length, including lower case alpha and numbers only.
 
 <img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Basics.png" width="700" height="625" />
