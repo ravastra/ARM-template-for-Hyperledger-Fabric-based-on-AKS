@@ -11,7 +11,7 @@ Post deployment a script is provided to create consortium, create channel, insta
 The Azure Blockchain for Hyperledger Fabric (AKS based) template is enabled in Azure Marketplace for private preview customers only. Customers whose subscriptions are whitelisted by Microsoft team will be able to access the template. 
 To get yourself onboarded to the private preview please mail your subscription ID details along with your organization details to Azure Blockchain HLF team at azbchlf@microsoft.com 
 
-#### *Note: The template is currently supported in EastUS, WestEurope, WestUS2, SoutheastAsia, EastUS2, NorthEurope, Australia East and UKSouth Azure regions. 
+Note: The template is currently supported in EastUS, WestEurope, WestUS2, SoutheastAsia, EastUS2, NorthEurope, Australia East and UKSouth Azure regions. 
 
 <a name="support"></a>
 ## 2. Support Forum
