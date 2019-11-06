@@ -30,7 +30,7 @@ To get started with the HLF network components deployment, navigate to Azure por
 
 1. Click on create to start the template deployment 
 
-<img src="https://github.com/shrugupt/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Firstpage.png" width="800" height="500" />
+<img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/images/HLF_AKS_Template_Firstpage.PNG" width="1000" height="500" />
 
 
 2. Provide the input parameters in the Basics tab 
