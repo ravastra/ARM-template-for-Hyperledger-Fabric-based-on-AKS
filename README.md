@@ -203,14 +203,14 @@ SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIP
 kubectl apply -f fabric-admin.yaml
 
 #Copy chaincode from azure file to fabric-admin pod at path '/var/hyperledger/src/mychaincode'
-AZURE_FILE_CHAINCODE_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/mychaincode/*?$SAS_TOKEN"
+AZURE_FILE_CHAINCODE_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/mychaincode?$SAS_TOKEN"
 kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_CHAINCODE_CS' '/var/hyperledger/src' --recursive"
 
 #Copy orderer TLS CA certificate from azure file to fabric admin pod at path '/var/hyperldger/orderer'
 AZURE_FILE_ORDERER_TLSCERT_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/$PEER_ORG_NAME/orderer?$SAS_TOKEN"
 kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_ORDERER_TLSCERT_CS' '/var/hyperledger' --recursive" 
 ```
-Now, you can use HLF Native chaincode code command on this fabric-admin pod to run your chaincode.
+Now, you can use HLF Native chaincode code command on this fabric-admin pod to run your own chaincode.
 
 Set these environment variable on fabric-admin pod as per your chaincode
 ```bash
@@ -219,7 +219,8 @@ export CHAINCODE=<chaincodeName>
 export LANGUAGE=<chaincodelanguage>
 export CHANNEL=<channelName>
 export VERSION=<chaincodeVersion>
-export ORDERER_END_POINT=<ordererAddress>
+export ORDERER_DNS_ZONE=<ordererDnsZone
+export ORDERER_END_POINT="orderer1.$ORDERER_DNS_ZONE:443"
 export CC_SRC_PATH="mychaincode"
 export ORDERER_TLS_CERT="/var/hyperledger/orderer/tlscacerts/ca.crt"
 export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
