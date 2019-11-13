@@ -180,9 +180,8 @@ PEER_NODE_NAME="peer<peer#>"
 ```
 
 #### 4. Run your own chaincode
-Execute below commands to run your own chaincode on the network established using above scripts. The steps provided below will create a fabric-admin pod and put your chaincode at path '/var/hyperledger/src/mychaincode' and orderer TLS CA certiificate at path '/var/hyperledger/orderer/tlscacerts/ca.crt'. 
+Execute below commands to run your own chaincode on the network established using above scripts. The steps provided below will create a fabric-admin pod and put your chaincode at path '/var/hyperledger/src/mychaincode' and orderer TLS CA certificate at path '/var/hyperledger/orderer/tlscacerts/ca.crt'. 
 
-These commands are to be executed on the peer organization AKS cluster.
 
 Step 1:- Create "./mychaincode" directory on Azure cloud shell and put your custom chaincode in this directory
 ```bash
@@ -192,7 +191,7 @@ cat > ./mychaincode/myexample-chaincode.go
 [Ctrl+D]
 ```
 
-Step 2:- Copy the chaincode to Azure File Share. This is a same azure file share which has been used to Upload Org MSP while creating the consortium. 
+Step 2:- Copy the chaincode to Azure File Share. This is a same azure file share which is used to Upload Org MSP while creating the consortium. 
 ```bash
 azcopy copy './mychaincode' $AZURE_FILE_CONNECTION_STRING --recursive
 ```
