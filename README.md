@@ -197,7 +197,7 @@ Step 2:- Copy the chaincode to Azure File Share. This is a same azure file share
 azcopy copy './mychaincode' $AZURE_FILE_CONNECTION_STRING --recursive
 ```
 
-Step 3:- Start fabric-admin and copy your custom chaincode and orderer TLS Root certiifcate in it
+Step 3:- Start fabric-admin and copy your custom chaincode and orderer TLS Root certificate inside the pod.
 ```bash
 SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
 kubectl apply -f fabric-admin.yaml
@@ -210,7 +210,7 @@ kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_CHAINCODE_CS'
 AZURE_FILE_ORDERER_TLSCERT_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/$PEER_ORG_NAME/orderer?$SAS_TOKEN"
 kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_ORDERER_TLSCERT_CS' '/var/hyperledger' --recursive" 
 ```
-Now, you can use HLF Native chaincode code command on this fabric-admin pod.
+Now, you can use HLF Native chaincode code command on this fabric-admin pod to run your chaincode.
 
 To install the chaincode
 ```bash
@@ -223,6 +223,7 @@ Likewise, you can execute above step on any peer node where you want to install 
 
 To intantiate the chaincode
 ```bash
+kubectl exec -it fabric-admin bash
 export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
 export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
 peer chaincode instantiate -o orderer1.a6799c77c87c404ca041.southeastasia.aksapp.io:443 --tls --cafile /var/hyperledger/orderer/tlscacerts/ca.crt -C "testchannel" -n "mycc" -l "golang" -v 1.0 -c '{"Args":["init","a","1000","b","2000"]}'
@@ -230,6 +231,7 @@ peer chaincode instantiate -o orderer1.a6799c77c87c404ca041.southeastasia.aksapp
 
 To query chaincode
 ```bash
+kubectl exec -it fabric-admin bash
 export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
 export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
 peer chaincode query -C "testchannel" -n "mycc" -c '{"Args":["query","a"]}'
@@ -237,6 +239,7 @@ peer chaincode query -C "testchannel" -n "mycc" -c '{"Args":["query","a"]}'
 
 To invoke chaincode
 ```bash
+kubectl exec -it fabric-admin bash
 export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
 export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
 peer chaincode invoke -o <ordererAddress> --tls --cafile /var/hyperledger/orderer/tlscacerts/ca.crt -C "testchannel" -n "mycc" -c '{"Args":["invoke","a","b","10"]}'
