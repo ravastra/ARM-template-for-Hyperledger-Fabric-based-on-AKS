@@ -110,6 +110,7 @@ PEER_AKS_NAME=<peerAKSClusterName>
 PEER_AKS_SUBSCRIPTION=<peerAKSClusterSubscriptionID>
 # Peer organization name is case sensitive. Specify exactly the same name which was provided while creating the Peer AKS Cluster.
 PEER_ORG_NAME=<peerOrganizationName>
+PEER_DNS_ZONE=<peerDNSZone>
 ````
 
 Create one Azure File share to share various public certificates among peer and orderer organizations.
@@ -205,63 +206,48 @@ kubectl apply -f fabric-admin.yaml
 
 #Copy chaincode from azure file to fabric-admin pod at path '/var/hyperledger/src/mychaincode'
 AZURE_FILE_CHAINCODE_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/mychaincode?$SAS_TOKEN"
-kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_CHAINCODE_CS' '/var/hyperledger/src' --recursive"
+kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_CHAINCODE_CS' '/var/hyperledger/src' --recursive=true"
 
 #Copy orderer TLS CA certificate from azure file to fabric admin pod at path '/var/hyperldger/orderer'
 AZURE_FILE_ORDERER_TLSCERT_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/$PEER_ORG_NAME/orderer?$SAS_TOKEN"
-kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_ORDERER_TLSCERT_CS' '/var/hyperledger' --recursive" 
+kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_ORDERER_TLSCERT_CS' '/var/hyperledger' --recursive=true" 
 ```
 Now, you can use HLF Native chaincode code command on this fabric-admin pod to run your own chaincode.
 
-Set these environment variable on fabric-admin pod as per your chaincode
+Set chaincode specific environment variables
 ```bash
-kubectl exec -it fabric-admin bash
-export CHAINCODE=<chaincodeName>
-export LANGUAGE=<chaincodelanguage>
-export CHANNEL=<channelName>
-export VERSION=<chaincodeVersion>
-export ORDERER_DNS_ZONE=<ordererDnsZone>
-export ORDERER_END_POINT="orderer1.$ORDERER_DNS_ZONE:443"
-export CC_SRC_PATH="mychaincode"
-export ORDERER_TLS_CERT="/var/hyperledger/orderer/tlscacerts/ca.crt"
-export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+CHAINCODE=<chaincodeName>
+LANGUAGE=<chaincodelanguage>
+CHANNEL=<channelName>
+VERSION=<chaincodeVersion>
+CC_SRC_PATH="mychaincode"
+ORDERER_TLS_CERT="/var/hyperledger/orderer/tlscacerts/ca.crt"
+# Set 'CC_INSTANTIATE_STRING' to constructor message to be passed in 'peer chaincode invoke' command. 
+# For example, for our Demo chaincode we are setting it to '{"Args":["init","a","1000","b","2000"]}'
+CC_INSTANTIATE_STRING='<chaincodeInstantiateString>'
+# Set 'CC_INVOKE_STRING' to constructor message to be passed in 'peer chaincode invoke' command. 
+# For example, for our Demo chaincode we are setting it to '{"Args":["invoke","a","b","10"]}'
+CC_INVOKE_STRING='<chaincodeInvokeString>'
+# Set 'CC_QUERY_STRING' to constructor message to be passed in 'peer chaincode query' command. 
+# For example, for our Demo chaincode we are setting it to '{"Args":["query","a"]}'
+CC_QUERY_STRING='<chaincodeQueryString>'
 ```
 
 To install the chaincode
 ```bash
-kubectl exec -it fabric-admin bash
-
-# Set 'CORE_PEER_ADDRESS' as per the peer node number where you want to execute 'peer chaincode' command. 
-# In example command below, we have set 'CORE_PEER_ADDRESS' to execute the command on 'peer1'. 
-export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
-peer chaincode install -n $CHAINCODE -v $VERSION -l $LANGUAGE -p $CC_SRC_PATH
+kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode install -n $CHAINCODE -v $VERSION -l $LANGUAGE -p $CC_SRC_PATH"
 ```
-
 To instantiate the chaincode
 ```bash
-kubectl exec -it fabric-admin bash
-
-# Set 'CORE_PEER_ADDRESS' as per the peer node number where you want to execute 'peer chaincode' command. 
-# In example command below, we have set 'CORE_PEER_ADDRESS' to execute the command on 'peer1'. 
-export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
-peer chaincode instantiate -o $ORDERER_END_POINT --tls --cafile /var/hyperledger/orderer/tlscacerts/ca.crt -C $CHANNEL -n $CHAINCODE -l $LANGUAGE -v $VERSION -c <endorsementpolicy>
+kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode instantiate -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -l $LANGUAGE -v $VERSION -c '$C_INSTANTIATE_STRING'"
+exit
 ```
 To query chaincode
 ```bash
-kubectl exec -it fabric-admin bash
-
-# Set 'CORE_PEER_ADDRESS' as per the peer node number where you want to execute 'peer chaincode' command. 
-# In example command below, we have set 'CORE_PEER_ADDRESS' to execute the command on 'peer1'. 
-export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
-peer chaincode query -C $CHANNEL -n $CHAINCODE -c <query>
+kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode query -C $CHANNEL -n $CHAINCODE -c '$CC_QUERY_STRING'"
 ```
 
 To invoke chaincode
 ```bash
-kubectl exec -it fabric-admin bash
-
-# Set 'CORE_PEER_ADDRESS' as per the peer node number where you want to execute 'peer chaincode' command. 
-# In example command below, we have set 'CORE_PEER_ADDRESS' to execute the command on 'peer1'. 
-export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
-peer chaincode invoke -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -c <invokequery>
+kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode invoke -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -c '$CC_INVOKE_STRING'"
 ```
