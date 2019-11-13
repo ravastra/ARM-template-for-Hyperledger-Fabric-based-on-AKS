@@ -178,3 +178,66 @@ PEER_NODE_NAME="peer<peer#>"
 ./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
 ./byn.sh queryDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME"
 ```
+
+#### 4. Run your own chaincode
+Execute below commands to run your own chaincode on the network established using above scripts. The steps provided below will create a fabric-admin pod and put your chaincode at path '/var/hyperledger/src/mychaincode' and orderer TLS CA certiificate at path '/var/hyperledger/orderer/tlscacerts/ca.crt'. 
+
+These commands are to be executed on the peer organization AKS cluster.
+
+Step 1:- Create "./mychaincode" directory on Azure cloud shell and put your custom chaincode in this directory
+```bash
+mkdir ./mychaincode
+cat > ./mychaincode/myexample-chaincode.go
+<paste your chaincode content here>
+[Ctrl+D]
+```
+
+Step 2:- Copy the chaincode to Azure File Storage. This is a same file storage which has been used to Upload Org MSP while creating the consortium. 
+```bash
+azcopy copy './mychaincode' $AZURE_FILE_CONNECTION_STRING --recursive
+```
+
+Step 3:- Start fabric-admin and copy your custom chaincode and orderer TLS Root certiifcate in it
+```bash
+SWITCH_TO_AKS_CLUSTER $PEER_AKS_RESOURCE_GROUP $PEER_AKS_NAME $PEER_AKS_SUBSCRIPTION
+kubectl apply -f fabric-admin.yaml
+
+#Copy chaincode from azure file to fabric-admin pod at path '/var/hyperledger/src/mychaincode'
+AZURE_FILE_CHAINCODE_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/mychaincode/*?$SAS_TOKEN"
+kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_CHAINCODE_CS' '/var/hyperledger/src' --recursive"
+
+#Copy orderer TLS CA certificate from azure file to fabric admin pod at path '/var/hyperldger/orderer'
+AZURE_FILE_ORDERER_TLSCERT_CS="https://$STORAGE_ACCOUNT.file.core.windows.net/$STORAGE_FILE_SHARE/$PEER_ORG_NAME/orderer?$SAS_TOKEN"
+kubectl exec -it fabric-admin -- bash -c "azcopy copy '$AZURE_FILE_ORDERER_TLSCERT_CS' '/var/hyperledger' --recursive" 
+```
+Now, you can use HLF Native chaincode code command on this fabric-admin pod.
+
+To install the chaincode
+```bash
+kubectl exec -it fabric-admin bash
+export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
+peer chaincode install -n "mycc" -v 1.0 -l golang -p "mychaincode"
+```
+Likewise, you can execute above step on any peer node where you want to install the chaincode. Just modify 'CORE_PEER_ADDRESS' as per the peer node number.
+
+To intantiate the chaincode
+```bash
+export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
+peer chaincode instantiate -o orderer1.a6799c77c87c404ca041.southeastasia.aksapp.io:443 --tls --cafile /var/hyperledger/orderer/tlscacerts/ca.crt -C "testchannel" -n "mycc" -l "golang" -v 1.0 -c '{"Args":["init","a","1000","b","2000"]}'
+```
+
+To query chaincode
+```bash
+export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
+peer chaincode query -C "testchannel" -n "mycc" -c '{"Args":["query","a"]}'
+```
+
+To invoke chaincode
+```bash
+export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+export CORE_PEER_ADDRESS="peer1.${HLF_DOMAIN_NAME}:443"
+peer chaincode invoke -o <ordererAddress> --tls --cafile /var/hyperledger/orderer/tlscacerts/ca.crt -C "testchannel" -n "mycc" -c '{"Args":["invoke","a","b","10"]}'
+```
