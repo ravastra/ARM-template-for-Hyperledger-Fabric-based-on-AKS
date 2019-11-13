@@ -189,7 +189,7 @@ Create "./mychaincode" directory on Azure cloud shell
 rm -rf ./mychaincode; mkdir ./mychaincode
 ```
 
-Upload your chaincode into "./mychaincode" directory on azure cloud shell. To upload the chaincode, you can use either curl command or <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell. Then, move the uploaded chaincode to "./mychaincode" directory.
+Upload your chaincode into "./mychaincode" directory. To upload a chaincode on azure cloud shell, you can use either curl command or <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell. Then, move the uploaded chaincode to "./mychaincode" directory.
 ```bash
 mv ./myexmaple-chaincode.go ./mychaincode
 ```
