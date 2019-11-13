@@ -192,7 +192,7 @@ cat > ./mychaincode/myexample-chaincode.go
 [Ctrl+D]
 ```
 
-Step 2:- Copy the chaincode to Azure File Storage. This is a same file storage which has been used to Upload Org MSP while creating the consortium. 
+Step 2:- Copy the chaincode to Azure File Share. This is a same azure file share which has been used to Upload Org MSP while creating the consortium. 
 ```bash
 azcopy copy './mychaincode' $AZURE_FILE_CONNECTION_STRING --recursive
 ```
