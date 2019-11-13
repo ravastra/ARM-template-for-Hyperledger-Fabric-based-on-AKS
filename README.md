@@ -239,7 +239,7 @@ kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_OR
 ```
 To instantiate the chaincode
 ```bash
-kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode instantiate -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -l $LANGUAGE -v $VERSION -c '$C_INSTANTIATE_STRING'"
+kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode instantiate -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -l $LANGUAGE -v $VERSION -c '$CC_INSTANTIATE_STRING'"
 ```
 To query chaincode
 ```bash
