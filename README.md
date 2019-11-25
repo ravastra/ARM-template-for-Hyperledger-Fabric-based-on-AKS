@@ -250,7 +250,7 @@ To invoke chaincode
 ```bash
 kubectl exec -it fabric-admin -- bash -c "export CORE_PEER_LOCALMSPID='${PEER_ORG_NAME}MSP';export CORE_PEER_ADDRESS='peer1.${PEER_DNS_ZONE}:443';peer chaincode invoke -o $ORDERER_END_POINT --tls --cafile $ORDERER_TLS_CERT -C $CHANNEL -n $CHAINCODE -c '$CC_INVOKE_STRING'"
 ```
-#### 4. Generate new user certificate
+#### 5. Generate new user certificate
 Execute below commands in the given order to generate a new user certificate using the Fabric-CA running on organization AKS cluster.
 
 You can execute below commmands from Azure CLI Bash shell.
@@ -273,17 +273,18 @@ Start fabric-admin pod on the same AKS cluster where your HLF organization is ru
 kubectl apply -f fabric-admin.yaml
 ```
 
-Now, run 'fabric-ca-client enroll' command to enroll the identity which will issue register request for new user. In this tutorial, fabric-ca admin identity's credential is used to register new user. Please note, the identity performing the register request for new user must be already enrolled, and must also have the proper authority to register the type of the identity that is being registered.
+Now, run 'fabric-ca-client enroll' command to enroll the identity which will issue register request for new user. In the below command, fabric-ca admin identity's credential is used to register new user. 
+*Please note, the identity performing the register request for new user must be already enrolled, and must also have the proper authority to register the type of the identity that is being registered.*
 ```
 kubectl exec -it fabric-admin -- bash -c "rm -rf /tmp/fabric-ca; mkdir -p /tmp/fabric-ca/$USER_NAME; export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client enroll -u http://$CA_USERNAME:$CA_PASSWORD@ca:7054;
 ```
 
-Next, issue 'fabric-ca-client register' command to register the new user. The below command register a new identity of type 'user'. You can modify 'fabric-ca-client register' command to set user attributes as per your need.
+Next, issue 'fabric-ca-client register' command to register the new user. The below command register an identity of type 'user'. You can modify 'fabric-ca-client register' command to set the user attributes as per your requirement.
 ```
 kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client register --id.name $USER_NAME --id.secret $CA_PASSWORD --id.type 'user' -u http://ca:7054";
 ```
 
-Now that you have successfully registered the user, issue 'fabric-ca-client enroll' command to get the public and private key of the user. Hyperledger fabric stores the the newly generated certifcates at $FABRIC_CA_CLIENT_MSPDIR, which is  '/tmp/fabric-ca/<user_name>' in this command. 
+Now that you have successfully registered the user, issue 'fabric-ca-client enroll' command to get the public and private key of the user. Hyperledger fabric stores the certificates at $FABRIC_CA_CLIENT_MSPDIR, which is  '/tmp/fabric-ca/<user_name>' in this command. 
 ```
 kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';export FABRIC_CA_CLIENT_MSPDIR='/tmp/fabric-ca/$USER_NAME'; fabric-ca-client enroll -u http://$USER_NAME:$CA_PASSWORD@ca:7054;"
 ```
@@ -291,9 +292,9 @@ kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fab
 The user public and private key generated using the above command are stored in fabric-admin pod at '/tmp/fabric-ca/<user_name>' path. You can use below commands to dump the public and private key. 
 ```
 # Dump private key
-kubectl exec -it fabric-admin -- bash -c "cat /tmp/fabric-ca/user-cert/keystore/*_sk"
+kubectl exec -it fabric-admin -- bash -c "cat /tmp/fabric-ca/$USER_NAME/keystore/*_sk"
 # Dump public key
-kubectl exec -it fabric-admin -- bash -c "cat /tmp/fabric-ca/user-cert/signcerts/cert.pem"
+kubectl exec -it fabric-admin -- bash -c "cat /tmp/fabric-ca/$USER_NAME/signcerts/cert.pem"
 ```
 
 Delete fabric-admin pod once you are done
