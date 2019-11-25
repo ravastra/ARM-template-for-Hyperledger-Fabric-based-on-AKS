@@ -257,14 +257,14 @@ You can execute below commmands from Azure CLI Bash shell.
 
 Set below environment variables on Azure CLI Bash shell:
 ```
-ORG_AKS_RESOURCE_GROUP<aksResourceGroup>
+ORG_AKS_RESOURCE_GROUP=<aksResourceGroup>
 ORG_AKS_NAME=<aksResourceName>
 ORG_AKS_SUBSCRIPTION=<aksResourceSubscription>
 SWITCH_TO_AKS_CLUSTER() { az aks get-credentials --resource-group $1 --name $2 --subscription $3; }
 SWITCH_TO_AKS_CLUSTER $ORG_AKS_RESOURCE_GROUP $ORG_AKS_NAME $ORG_AKS_SUBSCRIPTION
 CA_USERNAME=$(kubectl get secret ca-credentials -o jsonpath={.data.ca-admin-user} | base64 -d -)
 CA_PASSWORD=$(kubectl get secret ca-credentials -o jsonpath={.data.ca-admin-password} | base64 -d -)
-# username for the new user to be created 
+# username for the new identity to be created 
 USER_NAME=<user_name>
 ```
 
@@ -276,17 +276,17 @@ kubectl apply -f fabric-admin.yaml
 Now, run 'fabric-ca-client enroll' command to enroll the identity which will issue register request for new user. In the below command, fabric-ca admin identity's credential is used to register new user.\
 *Please note, the identity performing the register request for new user must be already enrolled, and must also have the proper authority to register the type of the identity that is being registered.*
 ```
-kubectl exec -it fabric-admin -- bash -c "rm -rf /tmp/fabric-ca; mkdir -p /tmp/fabric-ca/$USER_NAME; export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client enroll -u http://$CA_USERNAME:$CA_PASSWORD@ca:7054;
+kubectl exec -it fabric-admin -- bash -c "rm -rf /tmp/fabric-ca; mkdir -p /tmp/fabric-ca/$USER_NAME; export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client enroll -u http://$CA_USERNAME:$CA_PASSWORD@ca:7054"
 ```
 
 Next, issue 'fabric-ca-client register' command to register the new user. The below command register an identity of type 'user'. You can modify 'fabric-ca-client register' command to set the user attributes as per your requirement.
 ```
-kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client register --id.name $USER_NAME --id.secret $CA_PASSWORD --id.type 'user' -u http://ca:7054";
+kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';fabric-ca-client register --id.name $USER_NAME --id.secret $CA_PASSWORD --id.type 'user' -u http://ca:7054"
 ```
 
 Now that you have successfully registered the user, issue 'fabric-ca-client enroll' command to get the public and private key of the user. Hyperledger fabric stores the certificates at $FABRIC_CA_CLIENT_MSPDIR, which is  '/tmp/fabric-ca/$USER_NAME' in this command. 
 ```
-kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';export FABRIC_CA_CLIENT_MSPDIR='/tmp/fabric-ca/$USER_NAME'; fabric-ca-client enroll -u http://$USER_NAME:$CA_PASSWORD@ca:7054;"
+kubectl exec -it fabric-admin -- bash -c "export FABRIC_CA_CLIENT_HOME='/tmp/fabric-ca';export FABRIC_CA_CLIENT_MSPDIR='/tmp/fabric-ca/$USER_NAME'; fabric-ca-client enroll -u http://$USER_NAME:$CA_PASSWORD@ca:7054"
 ```
 
 The identity's public and private key generated using the above command are stored in fabric-admin pod at '/tmp/fabric-ca/$USER_NAME' path. You can use below commands to dump the public and private key. 
