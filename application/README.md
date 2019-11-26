@@ -1,5 +1,5 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample javascripts which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identities, and install your own chaincode.
+To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample javascripts which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
 
 1. [ Prerequisites ](#prerequisites)
@@ -16,9 +16,9 @@ Execute below commands if you want to generate new user identites for the your H
 In the below commands, we are assuming that you are running it from Azure cloud shell.\
 #### Set below enviroment variable on azure bash shell
 ```
-# orgnanization name for wich the user identities are to be generated
+# Organization name for which user identity is to be generated
 ORGNAME=<orgname>
-# Name for new user identity. Identity will be registered with the Fabric-CA using this name.
+# Name of new user identity. Identity will be registered with the Fabric-CA using this name.
 USER_IDENTITY=<username>
 ```
 
@@ -47,7 +47,7 @@ mv ~/admin.json ./profile/$ORGNAME-admin.json
 It will copy connection profile and Admin Profile inside the './profile' folder with name '{orgname}-ccp.json' and '{orgname}-admin.json' respectively.
 
 #### Enroll Admin User
-Execute below command to enroll the Admin user. 
+Execute below command to enroll the Admin user
 ```
 npm run enrollAdmin
 ```
@@ -56,13 +56,11 @@ This command executes enrollAdmin.js to enroll the admin user. The scripts reads
 The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
   
 #### Register and enroll New User
-Execute below command to register new user
+Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
 npm run registerUser --username $USER_IDENTITY
 ```
-This command executes registerUser.js to register and enroll the user. It uses the admin user identity to issue register the user. 
-
-It stores user identity in the wallet created as described here.
+*Please note that it uses the admin user identity to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
 ## Chaincode operation:
