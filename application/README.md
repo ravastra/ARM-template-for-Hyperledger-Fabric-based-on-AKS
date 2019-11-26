@@ -17,9 +17,9 @@ In the below commands, we are assuming that you are running it from Azure cloud 
 #### Set below enviroment variable on azure bash shell
 ```
 # Organization name for which user identity is to be generated
-ORGNAME=<orgname>
+export ORGNAME=<orgname>
 # Name of new user identity. Identity will be registered with the Fabric-CA using this name.
-USER_IDENTITY=<username>
+export USER_IDENTITY=<username>
 ```
 
 #### Download enrollAdmin.js, registerUser.js and package.json
@@ -28,6 +28,11 @@ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fab
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
 curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/registerUser.js -o registerUser.js
 ```
+Execute below command to load all the required packages. It will take some time to load all the packages.
+```
+npm install
+```
+
 #### Generate connection profile and admin profile
 
 Create 'profile' directory on Azure cloud shell
@@ -58,7 +63,7 @@ The script use file system wallet to store the identites. It creates a wallet as
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
-npm run registerUser --username $USER_IDENTITY
+npm run registerUser
 ```
 *Please note that it uses the admin user identity to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
 
