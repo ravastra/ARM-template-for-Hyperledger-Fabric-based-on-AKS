@@ -59,9 +59,9 @@ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fab
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/install.js -o install.js
-curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/instantiate.js -o instantiate.js
-curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/invoke.js -o invoke.js
-curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/query.js -o query.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/instantiate.js -o instantiate.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/invoke.js -o invoke.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/query.js -o query.js
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
@@ -166,6 +166,9 @@ export CC_INST_FUNC=<instationFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INST_ARGS=<instantiationArguments>
 ```
+
+For example, for [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), you can set ```CC_INST_FUNC``` and ```CC_INST_ARGS``` to empty ```''```.
+
 Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
 ```
 npm run instantiateCC
@@ -180,6 +183,8 @@ export CC_INVK_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INVK_ARGS=<invokeArguments>
 ```
+Continuing to the ```fabcar``` chaincode, you can set ```CC_INVK_FUNC``` to ```initLedger``` and ```CC_INVK_ARGS``` to ```''``` to initiate the world with a set of cars' information.
+
 Execute below command to invoke the chaincode function:
 ```
 npm run invokeCC
@@ -195,6 +200,7 @@ export CC_QRY_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_QRY_ARGS=<invokeArguments>
 ```
+For ```fabcar``` chaincode, you can set ```CC_QRY_FUNC``` to ```QueryAllCars``` and ```CC_QRY_ARGS``` to ```''``` to query all information of the cars in the world state.
 
 Execute below command to query chaincode:
 ```
