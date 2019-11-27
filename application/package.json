@@ -4,14 +4,13 @@
   "description": "fabcar",
   "main": "enrollAdmin.js",
   "dependencies": {
-    "fabric-ca-client": "^1.4.1",
-    "fabric-network": "^1.4.1"
+    "fabric-ca-client": "^1.4.4",
+    "fabric-network": "^1.4.4"
   },
   "devDependencies": {},
   "scripts": {
-    "enrollCAAdmin": "node enrollCAAdmin.js",
-    "registerUser": "node registerUser.js",
-    "loadAdmin": "node loadAdminUser.js"
+    "enrollAdmin": "node enrollAdmin.js",
+    "registerUser": "node registerUser.js"
   },
   "author": "",
   "license": "ISC"
