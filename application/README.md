@@ -111,3 +111,37 @@ npm run registerUser
 
 <a name="chaincode"></a>
 ## Chaincode operation:
+1. [Install chaincode](#installCC)
+2. [Instantiate chaincode](#instantiateCC)
+3. [Invoke chaincode](#invokeCC)
+4. [Query chaincode](#queryCC)
+
+<a name="installCC"></a>
+### Install Chaincode
+
+
+```
+# peer organization name on which chaincode is to be installed
+export ORGNAME=<orgName>
+export USER_IDENTITY="admin.$ORGNAME"
+export GOPATH=""
+export CC_PATH
+export CC_VERSION=<chaincodeVersion>
+export CC_NAME=<chaincodeName>
+export CC_TYPE=<chaincodeType>
+```
+
+Execute below command to install chaincode on the peer 
+```
+npm run installCC
+```
+It will install chaincode on all the peer nodes of the organization.
+
+<a name="instantiateCC"></a>
+### Instantiate Chaincode
+
+<a name="invokeCC"></a>
+### Invoke Chaincode
+
+<a name="queryCC"></a>
+### Query Chaincode
