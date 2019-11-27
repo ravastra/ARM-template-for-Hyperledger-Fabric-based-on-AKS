@@ -170,10 +170,12 @@ export CC_INST_ARGS=<instantiationArguments>
 
 For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_INST_FUNC``` to ```"Init"``` and ```CC_INST_ARGS``` to empty string ```""```
 
-Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
+Execute below command to instantiate chaincode on the peer. 
 ```
 npm run instantiateCC
 ```
+\
+**This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
 
 <a name="invokeCC"></a>
 #### To Invoke Chaincode
@@ -190,7 +192,8 @@ Execute below command to invoke the chaincode function:
 ```
 npm run invokeCC
 ```
-Similar to chaincode instantiation, this command need to be executed only from one peer organization. Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes in the channel.
+\
+**Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
 
 <a name="queryCC"></a>
 #### To Query Chaincode
