@@ -1,5 +1,5 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample javascripts which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
+To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
 1. [ Prerequisites](#prerequisties)
 2. [ Setting up environment for the application](#setup)
@@ -11,7 +11,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 <a name="prerequisties"></a>
 ## Prerequisites
-The steps given in this document can be execute either from Azure Cloud Shell or any local machine which meets the below mentioned prerequisites:
+The steps given in this document can be execute either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
 
  - Ubuntu 16.04
  - Node.js v8.10.0 or above
@@ -41,6 +41,10 @@ The below command will setup the environment for execution of javascript. These 
 Create a project folder say ```app``` to store all the code files as follows:
 - enrollAdmin.js
 - registerUser.js
+- install.js
+- instantiate.js
+- invoke.js
+- query.js
 - package.json
 
 Create ```app``` folder and enter into the folder:
@@ -54,6 +58,10 @@ Download all  JS code files and package.json in the folder:
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/package.json -o package.json
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/install.js -o install.js
+curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/instantiate.js -o instantiate.js
+curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/invoke.js -o invoke.js
+curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/query.js -o query.js
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
@@ -69,7 +77,7 @@ Create ```profile``` directory inside the ```app``` folder
 cd ./app
 mkdir ./profile
 ```
-Generate connection profile and admin profile of the organization using the steps mentioned here and save it on your local machine. 
+Generate connection profile and admin profile of the organization using the steps mentioned [here](#TODO) and save it on your local machine. 
 
 Upload the generated connection profile and Admin profile on Azure Cloud shell.To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
 \
@@ -127,7 +135,9 @@ export ORGNAME=<orgName>
 export USER_IDENTITY="admin.$ORGNAME"
 # 'GOPATH' environment variable. This need to be set in case of go chaincode only.
 export GOPATH=<goPath>
-# CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'. For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
+# CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'.
+# For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. 
+# Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
 export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
