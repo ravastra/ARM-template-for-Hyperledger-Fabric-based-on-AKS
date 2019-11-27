@@ -119,81 +119,71 @@ npm run registerUser
 ## Chaincode operation:
 *Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
 
-- [Install chaincode](#installCC)
-- [Instantiate chaincode](#instantiateCC)
-- [Invoke chaincode](#invokeCC)
-- [Query chaincode](#queryCC)
-
-<a name="installCC"></a>
-### Install Chaincode
-Set below environment variable on Azure Cloud Shell:
+<a name="envCC"></a>
+#### Set below chaincode specific environment variables on Azure Cloud shell:
 ```
-# peer organization name on which chaincode is to be installed
+# peer organization name where chaincode is to be installed
 export ORGNAME=<orgName>
 export USER_IDENTITY="admin.$ORGNAME"
-# 'GOPATH' variable need to be set only in case of go chaincode 
+# 'GOPATH' environment variable. This need to be set in case of go chaincode only.
 export GOPATH=<goPath>
 # CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'. For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
 export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
 export CC_TYPE=<chaincodeType>
+# Channel on which chaincode is to be instantiated
+export CHANNEL_NAME="testchannel"
 ```
+- [Install chaincode](#installCC)
+- [Instantiate chaincode](#instantiateCC)
+- [Invoke chaincode](#invokeCC)
+- [Query chaincode](#queryCC)
 
-Execute below command to install chaincode on the peer. It will install chaincode on all the peer nodes of the organization.
+<a name="installCC"></a>
+#### To Install Chaincode
+Execute below command to install chaincode on the peer organization. It will install chaincode on all the peer nodes of the organization.
 ```
 npm run installCC
 ```
 
 <a name="instantiateCC"></a>
-### Instantiate Chaincode
-Set these environment variables on Azure Cloud Shell:
+#### To Instantiate Chaincode
+In addition to [chaincode specific environment variable](#envCC), set below environment variables for instantiation function and arguments:
 ```
-# peer organization name on which chaincode is to be installed
-export ORGNAME=<orgName>
-export USER_IDENTITY="admin.$ORGNAME"
-export CHANNEL_NAME=<channelName>
-export CC_VERSION=<chaincodeVersion>
-export CC_NAME=<chaincodeName>
-export CC_TYPE=<chaincodeType>
+# Function to be called on instantion of chaincode
+export CC_INST_FUNC=<instationFunction>
+# comma seperated list of arguments to be passed instantiation function.
+export CC_INST_ARGS=<instantiationArguments>
 ```
-Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to orderer, the orderer will distrute this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
+Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
 ```
 npm run instantiateCC
 ```
 
 <a name="invokeCC"></a>
-### Invoke Chaincode
-Set these environment variables on Azure Cloud Shell:
+#### To Invoke Chaincode
+In addition to [chaincode specific environment variable](#envCC), set below environment variables for invoke function and arguments:
 ```
-# peer organization name on which chaincode is to be installed
-export ORGNAME=<orgName>
-export USER_IDENTITY="admin.$ORGNAME"
-export CC_NAME=<chaincodeName>
-# chaincode function to be execute
-export CC_FUNC=<chaincodeFunction>
-# command seperated list of arguments to be passed to CC_FUNC
-export CCFUNC_ARGS=<Arguments>
-export CHANNEL_NAME=<channelName>
+# Function to be called on instantion of chaincode
+export CC_INVK_FUNC=<invokeFunction>
+# comma seperated list of arguments to be passed instantiation function.
+export CC_INVK_ARGS=<invokeArguments>
 ```
 Execute below command to invoke the chaincode function:
 ```
 npm run invokeCC
 ```
+Similar to chaincode instantiation, this command need to be executed only from one peer organization. Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes in the channel.
 
 <a name="queryCC"></a>
-### Query Chaincode
-Set these environment variables on Azure Cloud Shell:
+#### Query Chaincode
+In addition to [chaincode specific environment variable](#envCC), set below environment variables for query function and arguments:
 ```
-# peer organization name on which chaincode is to be installed
-export ORGNAME=<orgName>
-export USER_IDENTITY="admin.$ORGNAME"
-export CC_NAME=<chaincodeName>
-# chaincode function to be execute
-export CC_FUNC=<chaincodeFunction>
-# command seperated list of arguments to be passed to CC_FUNC
-export CCFUNC_ARGS=<Arguments>
-export CHANNEL_NAME=<channelName>
+# Function to be called on instantion of chaincode
+export CC_QURY_FUNC=<invokeFunction>
+# comma seperated list of arguments to be passed instantiation function.
+export CC_QURY_ARGS=<invokeArguments>
 ```
 
 Execute below command to query chaincode:
