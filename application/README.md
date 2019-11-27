@@ -3,7 +3,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 1. [ Prerequisites](#prerequisties)
 2. [ Setup environment for the application](#setup)
-3. [ Generation connection profile and admin profile](#profileGen)
+3. [ Generate connection profile and admin profile](#profileGen)
 3. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
    - [Chaincode operations](#chaincode)
@@ -168,7 +168,7 @@ export CC_INST_FUNC=<instationFunction>
 export CC_INST_ARGS=<instantiationArguments>
 ```
 
-For example, for [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), you can set ```CC_INST_FUNC``` and ```CC_INST_ARGS``` to empty ```''```.
+For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_INST_FUNC``` to ```"Init"``` and ```CC_INST_ARGS``` to empty string ```""```
 
 Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
 ```
@@ -184,7 +184,7 @@ export CC_INVK_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INVK_ARGS=<invokeArguments>
 ```
-Continuing to the ```fabcar``` chaincode example, you can set ```CC_INVK_FUNC``` to ```initLedger``` and ```CC_INVK_ARGS``` to ```''``` to initiate the world with a set of cars' information.
+Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```CC_INVK_FUNC``` to ```"initLedger"``` and ```CC_INVK_ARGS``` to ```""```.
 
 Execute below command to invoke the chaincode function:
 ```
@@ -201,7 +201,7 @@ export CC_QRY_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_QRY_ARGS=<invokeArguments>
 ```
-Again taking ```fabcar``` chaincode example as reference, you can set ```CC_QRY_FUNC``` to ```QueryAllCars``` and ```CC_QRY_ARGS``` to ```''``` to query all information of the cars in the world state.
+Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```CC_QRY_FUNC``` to ```"queryAllCars"``` and ```CC_QRY_ARGS``` to ```""```.
 
 Execute below command to query chaincode:
 ```
