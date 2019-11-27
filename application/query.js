@@ -25,7 +25,6 @@ async function main() {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);
         const wallet = new FileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(userId);
@@ -38,14 +37,11 @@ async function main() {
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccpPath, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
-        console.log('connect called successfully');
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork(channelName);
-        console.log('getNetwork testchannel successfully');
 
         // Get the contract from the network.
         const contract = network.getContract(ccName);
-        console.log('getNetwork mycc successfully');
 
         // Evaluate the specified transaction.
         // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')

@@ -22,7 +22,6 @@ async function main() {
 	const ccVersion = process.env.CC_VERSION;
         const ccFunc = process.env.CC_INST_FUNC;
 	const ccArgs = process.env.CC_INST_ARGS.split(",");
-        console.log(ccFunc + ',' + ccArgs);
 
 	const ccpFile = orgName + '-ccp.json'
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
@@ -32,35 +31,28 @@ async function main() {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);
         const wallet = new FileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(userId);
         if (!userExists) {
-           console.log('An identity for the admin user does not exist in the wallet');
-           console.log('Run \'npm run enrollAdmin\' command before retrying');
+           console.log('Identity for \'' + userId + '\' user does not exist in the wallet');
+           console.log('Register identity before retrying');
            return;
         }
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
-        console.log('connected to gateway');
 
         const client = gateway.getClient();
         const network = await gateway.getNetwork(channelName);
         var channel = network.getChannel();
         if(!channel) {
             let message = util.format('Channel %s was not defined in the connection profile', channelName);
-            console.log(message);
             throw new Error(message);
         }
 
         const peers = client.getPeersForOrg();
-
-        //process.env.GOPATH='/home/shruti'
-        //console.log(`${peers}`);
-        //console.log(`GOPATH=${process.env['GOPATH']}`);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will
@@ -81,7 +73,6 @@ async function main() {
         };
         let instantiateResponse = await channel.sendInstantiateProposal(request, 60000);
         
-        console.log('instantiate proposal sent');
         // the returned object has both the endorsement results
         // and the actual proposal, the proposal will be needed
         // later when we send a transaction to the orederer
@@ -195,7 +186,7 @@ async function main() {
             console.log(`${error_message}`);
         }
         } catch (error) {
-            console.error(`Failed to send instantiate due to error:  ${error.stack} ? ${error.stack} : ${error}`);
+            console.error(`Failed to instantiate chaincode due to error:  ${error.stack} ? ${error.stack} : ${error}`);
             process.exit(1);
          }
 }
