@@ -1,21 +1,50 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
 To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample javascripts which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
-
-1. [ Prerequisites ](#prerequisites)
+1. [ Prerequisites](#prerequisties)
 2. [ Setting up environment for the application](#setup)
-3. [ HLF Operations ](#Hlfop)
-   - [User identity generation ](#fabricca)
-   - [ Chaincode operation ](#chaincode)
+3. [ HLF Operations](#Hlfop)
+   - [User identity generation](#fabricca)
+   - [Chaincode operations](#chaincode)
 
-<a name="prerequisites"></a>
+
+<a name="prerequisties"></a>
 ## Prerequisites
+These commands can be execute either from Azure Cloud Shell or any local machine which meets the below mentioned prerequisites:
+
+ - Node.js v8.10.0 or above
+ 
+ #### To install Node
+ ##### Install NVM
+```
+sudo apt update
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.10/install.sh | bash
+export NVM_DIR = " $ HOME /.nvm " 
+[ -s  " $ NVM_DIR /nvm.sh " ] &&  \.  " $ NVM_DIR /nvm.sh " 
+```
+ ##### Install Node
+ ```
+  nvm install v8.11.1
+  ```
+You can use below command to check the installed version information:
+- Check Node version
+```
+node -v
+```
+Output: ```v8.11.1```
+- Check npm version
+```
+npm -v
+```
+Output: ```5.6.0```
+
+In rest of this document, we are assuming that you are running it from Azure cloud shell.
 
 <a name="setup"></a>
 ## Setting up environment for the application
 The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
 
-Create a project folder ```app``` to store all the code files inside it as follows:
+Create a project folder say ```app``` to store all the code files as follows:
 - enrollAdmin.js
 - registerUser.js
 - package.json
@@ -26,28 +55,25 @@ mkdir app
 cd app
 ```
 
-Download all the JS code files and package.json in the folder:
+Download all  JS code files and package.json in the folder:
 ```
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/package.json -o package.json
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
-curl https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-nodejs-app/application/registerUser.js -o registerUser.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
 ```
 npm install
 ```
-Now, you can see a folder ```node_modules``` in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
+Now, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
 <a name="Hlfop"></a>
 ## HLF Operations
 
 <a name="fabricca"></a>
 ### User identity generation
-Execute below commands in the given order to generate new user identites for the your HLF organization. These commands can be execute either from Azure CLI or any local machine which meets the above mentioned prerequisites.
-
-In the below commands, we are assuming that you are running it from Azure cloud shell. \
-
+Execute below commands in the given order to generate new user identites for the your HLF organization. 
 #### Set below enviroment variable on azure cloud shell
 ```
 # Organization name for which user identity is to be generated
@@ -65,8 +91,7 @@ mkdir ./profile
 ```
 Generate connection profile and admin profile of the organization using the steps mentioned here and save it on your local machine. 
 
-Upload the generated connection profile and Admin profile on Azure Cloud shell.\
-To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
+Upload the generated connection profile and Admin profile on Azure Cloud shell.To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
 \
 Download button always load the files in your home directory. Move these files to the ```profile``` folder created above.
 ```
