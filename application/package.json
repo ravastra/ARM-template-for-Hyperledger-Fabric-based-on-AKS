@@ -10,7 +10,11 @@
   "devDependencies": {},
   "scripts": {
     "enrollAdmin": "node enrollAdmin.js",
-    "registerUser": "node registerUser.js"
+    "registerUser": "node registerUser.js",
+    "installCC": "node install.js",
+    "instantiateCC": "node instantiate.js",
+    "invokeCC": "node invoke.js",
+    "queryCC": "node query.js"
   },
   "author": "",
   "license": "ISC"
