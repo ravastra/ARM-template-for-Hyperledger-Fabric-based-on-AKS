@@ -3,6 +3,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 1. [ Prerequisites](#prerequisties)
 2. [ Setting up environment for the application](#setup)
+3. [ Generation connection profile and admin profile](#profileGen)
 3. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
    - [Chaincode operations](#chaincode)
@@ -61,22 +62,8 @@ npm install
 ```
 Now, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
-<a name="Hlfop"></a>
-## HLF Operations
-
-<a name="fabricca"></a>
-### User identity generation
-Execute below commands in the given order to generate new user identites for the your HLF organization. 
-#### Set below enviroment variable on azure cloud shell
-```
-# Organization name for which user identity is to be generated
-export ORGNAME=<orgname>
-# Name of new user identity. Identity will be registered with the Fabric-CA using this name.
-export USER_IDENTITY=<username>
-```
-
-#### Generate connection profile and admin profile
-
+<a name="profileGen"></a>
+## Generate connection profile and admin profile
 Create ```profile``` directory inside the ```app``` folder
 ```
 cd ./app
@@ -88,11 +75,30 @@ Upload the generated connection profile and Admin profile on Azure Cloud shell.T
 \
 Download button always load the files in your home directory. Move these files to the ```profile``` folder created above.
 ```
+# Organization name
+export ORGNAME=<orgname>
 mv ~/gateway.json ./app/profile/$ORGNAME-ccp.json
 mv ~/admin.json ./app/profile/$ORGNAME-admin.json
 ```
 It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```{orgname}-ccp.json``` and ```{orgname}-admin.json``` respectively.
 
+<a name="Hlfop"></a>
+## HLF Operations
+
+
+<a name="fabricca"></a>
+### User identity generation
+Execute below commands in the given order to generate new user identites for the your HLF organization. 
+\
+\
+*Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) and [generate the profile files](#profileGen) of the organization.*
+#### Set below enviroment variable on azure cloud shell
+```
+# Organization name for which user identity is to be generated
+export ORGNAME=<orgname>
+# Name of new user identity. Identity will be registered with the Fabric-CA using this name.
+export USER_IDENTITY=<username>
+```
 #### Enroll Admin User
 Execute below command to enroll the Admin user
 ```
@@ -111,31 +117,33 @@ npm run registerUser
 
 <a name="chaincode"></a>
 ## Chaincode operation:
-1. [Install chaincode](#installCC)
-2. [Instantiate chaincode](#instantiateCC)
-3. [Invoke chaincode](#invokeCC)
-4. [Query chaincode](#queryCC)
+*Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
+
+- [Install chaincode](#installCC)
+- [Instantiate chaincode](#instantiateCC)
+- [Invoke chaincode](#invokeCC)
+- [Query chaincode](#queryCC)
 
 <a name="installCC"></a>
 ### Install Chaincode
-
-
+Set below environment variable on Azure Cloud Shell:
 ```
 # peer organization name on which chaincode is to be installed
 export ORGNAME=<orgName>
 export USER_IDENTITY="admin.$ORGNAME"
-export GOPATH=""
-export CC_PATH
+# 'GOPATH' variable need to be set only in case of go chaincode 
+export GOPATH=<goPath>
+# CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'. For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
+export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
 export CC_TYPE=<chaincodeType>
 ```
 
-Execute below command to install chaincode on the peer 
+Execute below command to install chaincode on the peer. It will install chaincode on all the peer nodes of the organization.
 ```
 npm run installCC
 ```
-It will install chaincode on all the peer nodes of the organization.
 
 <a name="instantiateCC"></a>
 ### Instantiate Chaincode
