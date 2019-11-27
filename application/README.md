@@ -147,9 +147,56 @@ npm run installCC
 
 <a name="instantiateCC"></a>
 ### Instantiate Chaincode
+Set these environment variables on Azure Cloud Shell:
+```
+# peer organization name on which chaincode is to be installed
+export ORGNAME=<orgName>
+export USER_IDENTITY="admin.$ORGNAME"
+export CHANNEL_NAME=<channelName>
+export CC_VERSION=<chaincodeVersion>
+export CC_NAME=<chaincodeName>
+export CC_TYPE=<chaincodeType>
+```
+Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to orderer, the orderer will distrute this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
+```
+npm run instantiateCC
+```
 
 <a name="invokeCC"></a>
 ### Invoke Chaincode
+Set these environment variables on Azure Cloud Shell:
+```
+# peer organization name on which chaincode is to be installed
+export ORGNAME=<orgName>
+export USER_IDENTITY="admin.$ORGNAME"
+export CC_NAME=<chaincodeName>
+# chaincode function to be execute
+export CC_FUNC=<chaincodeFunction>
+# command seperated list of arguments to be passed to CC_FUNC
+export CCFUNC_ARGS=<Arguments>
+export CHANNEL_NAME=<channelName>
+```
+Execute below command to invoke the chaincode function:
+```
+npm run invokeCC
+```
 
 <a name="queryCC"></a>
 ### Query Chaincode
+Set these environment variables on Azure Cloud Shell:
+```
+# peer organization name on which chaincode is to be installed
+export ORGNAME=<orgName>
+export USER_IDENTITY="admin.$ORGNAME"
+export CC_NAME=<chaincodeName>
+# chaincode function to be execute
+export CC_FUNC=<chaincodeFunction>
+# command seperated list of arguments to be passed to CC_FUNC
+export CCFUNC_ARGS=<Arguments>
+export CHANNEL_NAME=<channelName>
+```
+
+Execute below command to query chaincode:
+```
+npm run queryCC
+```
