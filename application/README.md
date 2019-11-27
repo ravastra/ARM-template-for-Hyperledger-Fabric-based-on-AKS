@@ -177,13 +177,13 @@ npm run invokeCC
 Similar to chaincode instantiation, this command need to be executed only from one peer organization. Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes in the channel.
 
 <a name="queryCC"></a>
-#### Query Chaincode
+#### To Query Chaincode
 In addition to [chaincode specific environment variable](#envCC), set below environment variables for query function and arguments:
 ```
 # Function to be called on instantion of chaincode
-export CC_QURY_FUNC=<invokeFunction>
+export CC_QRY_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
-export CC_QURY_ARGS=<invokeArguments>
+export CC_QRY_ARGS=<invokeArguments>
 ```
 
 Execute below command to query chaincode:
