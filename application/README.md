@@ -10,35 +10,28 @@ To help customers get started with executing Hyperldger Native commands on their
 
 <a name="prerequisties"></a>
 ## Prerequisites
-These commands can be execute either from Azure Cloud Shell or any local machine which meets the below mentioned prerequisites:
+The steps given in this document can be execute either from Azure Cloud Shell or any local machine which meets the below mentioned prerequisites:
 
+ - Ubuntu 16.04
  - Node.js v8.10.0 or above
  
  #### To install Node
- ##### Install NVM
-```
-sudo apt update
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.10/install.sh | bash
-export NVM_DIR = " $ HOME /.nvm " 
-[ -s  " $ NVM_DIR /nvm.sh " ] &&  \.  " $ NVM_DIR /nvm.sh " 
-```
- ##### Install Node
- ```
-  nvm install v8.11.1
-  ```
+Please follows the steps given on [this](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/) link to install or updated nodeJS version.
+
 You can use below command to check the installed version information:
 - Check Node version
 ```
-node -v
+node --version
 ```
-Output: ```v8.11.1```
+Output: ```v8.10.0```
 - Check npm version
 ```
-npm -v
+npm -version
 ```
-Output: ```5.6.0```
+Output: ```6.13.1```
 
-In rest of this document, we are assuming that you are running it from Azure cloud shell.
+
+In the rest of the document, we are assuming that you are running it from Azure cloud shell.
 
 <a name="setup"></a>
 ## Setting up environment for the application
