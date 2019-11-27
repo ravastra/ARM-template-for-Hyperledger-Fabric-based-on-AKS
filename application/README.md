@@ -121,10 +121,10 @@ Execute below command to register and enroll new user. This command executes reg
 ```
 npm run registerUser
 ```
-*Please note that it uses the admin user identity to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
+*Please note that the admin user identity is used to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
-## Chaincode operation:
+### Chaincode operation:
 *Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
 
 <a name="envCC"></a>
@@ -152,10 +152,11 @@ export CHANNEL_NAME="testchannel"
 
 <a name="installCC"></a>
 #### To Install Chaincode
-Execute below command to install chaincode on the peer organization. It will install chaincode on all the peer nodes of the organization.
+Execute below command to install chaincode on the peer organization. 
 ```
 npm run installCC
 ```
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME```. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
 <a name="instantiateCC"></a>
 #### To Instantiate Chaincode
