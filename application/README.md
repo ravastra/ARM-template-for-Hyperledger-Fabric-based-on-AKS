@@ -2,7 +2,7 @@
 To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
 1. [ Prerequisites](#prerequisties)
-2. [ Setting up environment for the application](#setup)
+2. [ Setup environment for the application](#setup)
 3. [ Generation connection profile and admin profile](#profileGen)
 3. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
@@ -35,7 +35,7 @@ Output: ```6.13.1```
 In the rest of the document, we are assuming that you are running it from Azure cloud shell.
 
 <a name="setup"></a>
-## Setting up environment for the application
+## Setup environment for the application
 The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
 
 Create a project folder say ```app``` to store all the code files as follows:
@@ -93,7 +93,6 @@ It will copy connection profile and Admin Profile inside the ```profile``` folde
 <a name="Hlfop"></a>
 ## HLF Operations
 
-
 <a name="fabricca"></a>
 ### User identity generation
 Execute below commands in the given order to generate new user identites for the your HLF organization. 
@@ -124,7 +123,7 @@ npm run registerUser
 *Please note that the admin user identity is used to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
-### Chaincode operation:
+### Chaincode operations
 *Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
 
 <a name="envCC"></a>
@@ -156,7 +155,8 @@ Execute below command to install chaincode on the peer organization.
 ```
 npm run installCC
 ```
-It will install chaincode on all the peer nodes of the organization set in ```ORGNAME```. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
+\
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
 <a name="instantiateCC"></a>
 #### To Instantiate Chaincode
@@ -184,7 +184,7 @@ export CC_INVK_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INVK_ARGS=<invokeArguments>
 ```
-Continuing to the ```fabcar``` chaincode, you can set ```CC_INVK_FUNC``` to ```initLedger``` and ```CC_INVK_ARGS``` to ```''``` to initiate the world with a set of cars' information.
+Continuing to the ```fabcar``` chaincode example, you can set ```CC_INVK_FUNC``` to ```initLedger``` and ```CC_INVK_ARGS``` to ```''``` to initiate the world with a set of cars' information.
 
 Execute below command to invoke the chaincode function:
 ```
@@ -201,7 +201,7 @@ export CC_QRY_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_QRY_ARGS=<invokeArguments>
 ```
-For ```fabcar``` chaincode, you can set ```CC_QRY_FUNC``` to ```QueryAllCars``` and ```CC_QRY_ARGS``` to ```''``` to query all information of the cars in the world state.
+Again taking ```fabcar``` chaincode example as reference, you can set ```CC_QRY_FUNC``` to ```QueryAllCars``` and ```CC_QRY_ARGS``` to ```''``` to query all information of the cars in the world state.
 
 Execute below command to query chaincode:
 ```
