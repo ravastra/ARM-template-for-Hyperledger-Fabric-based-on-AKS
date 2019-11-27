@@ -15,8 +15,8 @@ async function main() {
 	const userId = process.env.USER_IDENTITY;
 	const channelName = process.env.CHANNEL_NAME;
 	const ccName = process.env.CC_NAME;
-	const ccFunc = process.env.CC_FUNC;
-	const ccArgs = process.env.CCFUNC_ARGS;
+	const ccFunc = process.env.CC_QRY_FUNC;
+	const ccArgs = process.env.CC_QRY_ARGS;
 	const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');

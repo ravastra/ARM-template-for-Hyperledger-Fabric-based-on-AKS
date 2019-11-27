@@ -20,8 +20,9 @@ async function main() {
         const ccName = process.env.CC_NAME;
 	const ccType = process.env.CC_TYPE;
 	const ccVersion = process.env.CC_VERSION;
-        const ccFunc = process.env.CC_FUNC;
-	const ccArgs = process.env.CCFUNC_ARGS;
+        const ccFunc = process.env.CC_INST_FUNC;
+	const ccArgs = process.env.CC_INST_ARGS.split(",");
+        console.log(ccFunc + ',' + ccArgs);
 
 	const ccpFile = orgName + '-ccp.json'
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);

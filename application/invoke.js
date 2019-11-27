@@ -16,8 +16,8 @@ async function main() {
         const orgName = process.env.ORGNAME;
 	const userId = process.env.USER_IDENTITY;
 	const ccName = process.env.CC_NAME;
-	const ccFunc = process..env.CC_FUNC;
-	const ccArgs = process.env.CCFUNC_ARGS;
+	const ccFunc = process.env.CC_INVK_FUNC;
+	const ccArgs = process.env.CC_INVK_ARGS.split(",");
 	const channelName = process.env.CHANNEL_NAME;
 
 	const ccpFile = orgName + '-ccp.json';
@@ -70,7 +70,7 @@ async function main() {
          targets : peers,
          chaincodeId: ccName,
          fcn: ccFunc,
-         args: '['+ ccArgs + ']',
+         args: ccArgs,
          chainId: channelName,
          txId: tx_id
         };
