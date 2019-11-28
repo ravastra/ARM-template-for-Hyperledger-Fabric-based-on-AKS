@@ -8,18 +8,64 @@
   const path = require('path');
   const fs = require('fs');
   const util = require('util');
-
+  var args = require('yargs')
+      .usage('Usage: <command> [options]')
+      .command('queryCC', 'Perform chaincode query')
+      .option({
+      'o': {
+      alias: 'orgName',
+      describe: 'Name of organization',
+      },
+      'u': {
+      alias: 'user',
+      describe: 'User Identity',
+      },
+      'n': {
+      alias: 'name',
+      describe: 'Name of the chaincode',
+      },
+      'p': {
+      alias: 'path',
+      describe: 'Path to the chaincode',
+      },
+      'v': {
+      alias: 'version',
+      describe: 'Version of the chaincode',
+      },
+      'l': {
+      alias: 'lang',
+      describe: 'Language the chaincode is written in (default \'golang\')',
+      },
+      'f': {
+      alias: 'func',
+      describe: 'Function to be executed',
+      },
+      'a': {
+      alias: 'args',
+      describe: 'Comma separated list of arguments to the function',
+      },
+      })
+      .help('h')
+      .alias('h', 'help')
+      .argv;
 
 async function main() {
     try {
         var error_message = null;
-        const orgName = process.env.ORGNAME;
-	const userId = process.env.USER_IDENTITY;
-	const ccName = process.env.CC_NAME;
-	const ccFunc = process.env.CC_INVK_FUNC;
-	const ccArgs = process.env.CC_INVK_ARGS.split(",");
-	const channelName = process.env.CHANNEL_NAME;
+        //const orgName = process.env.ORGNAME;
+	//const userId = process.env.USER_IDENTITY;
+	//const ccName = process.env.CC_NAME;
+	//const ccFunc = process.env.CC_INVK_FUNC;
+	//const ccArgs = process.env.CC_INVK_ARGS.split(",");
+	//const channelName = process.env.CHANNEL_NAME;
 
+        const orgName = args.orgName;
+	const userId = args.user;
+	const ccName = args.name;
+	const ccFunc = args.func;
+	const ccArgs = args.args.split(",");
+
+	const channelName = process.env.CHANNEL_NAME;
 	const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');

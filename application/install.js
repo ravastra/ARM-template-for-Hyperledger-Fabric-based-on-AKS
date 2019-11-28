@@ -6,18 +6,56 @@
   const { FileSystemWallet, Gateway } = require('fabric-network');
   const path = require('path');
   const fs = require('fs');
-
+  var args = require('yargs')
+  .usage('Usage: <command> [options]')
+  .command('queryCC', 'Perform chaincode query')
+  .option({
+  'o': {
+  alias: 'orgName',
+  describe: 'Name of organization',
+  },
+  'u': {
+  alias: 'user',
+  describe: 'User Identity',
+  },
+  'n': {
+  alias: 'name',
+  describe: 'Name of the chaincode',
+  },
+  'p': {
+  alias: 'path',
+  describe: 'Path to the chaincode',
+  },
+  'v': {
+  alias: 'version',
+  describe: 'Version of the chaincode',
+  },
+  'l': {
+  alias: 'lang',
+  describe: 'Language the chaincode is written in (default \'golang\')',
+  }
+  })
+  .help('h')
+  .alias('h', 'help')
+  .argv;
 
 async function main() {
     try {
 
-        const orgName = process.env.ORGNAME;
-        const userId = process.env.USER_IDENTITY;
-        const ccPath = process.env.CC_PATH;
-        const ccVersion = process.env.CC_VERSION;
-        const ccName = process.env.CC_NAME;
-        const ccType = process.env.CC_TYPE;
+        //const orgName = process.env.ORGNAME;
+        //const userId = process.env.USER_IDENTITY;
+        //const ccPath = process.env.CC_PATH;
+        //const ccVersion = process.env.CC_VERSION;
+        //const ccName = process.env.CC_NAME;
+        //const ccType = process.env.CC_TYPE;
         
+        const orgName = args.orgName;
+        const userId = args.user;
+        const ccPath = args.path;
+        const ccVersion = args.version;
+        const ccName = args.name;
+        const ccType = args.lang;
+
         const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
