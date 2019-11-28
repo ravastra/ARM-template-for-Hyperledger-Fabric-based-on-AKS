@@ -140,9 +140,11 @@ export GOPATH=<goPath>
 export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
-export CC_TYPE=<chaincodeType>
+# Language in which chaincode is written. Supported languages are 'node', 'golang' and 'java'
+# Default value is 'golang'
+export CC_LANG=<chaincodeLanguage>
 # Channel on which chaincode is to be instantiated
-export CHANNEL_NAME="testchannel"
+export CHANNEL=<channelName>
 ```
 - [Install chaincode](#installCC)
 - [Instantiate chaincode](#instantiateCC)
@@ -153,26 +155,26 @@ export CHANNEL_NAME="testchannel"
 #### To Install Chaincode
 Execute below command to install chaincode on the peer organization. 
 ```
-npm run installCC
+npm run installCC -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $CC_LANG -v CC_VERSION
 ```
 \
-It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then this command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
 <a name="instantiateCC"></a>
 #### To Instantiate Chaincode
 In addition to [chaincode specific environment variable](#envCC), set below environment variables for instantiation function and arguments:
 ```
 # Function to be called on instantion of chaincode
-export CC_INST_FUNC=<instationFunction>
+export CC_FUNC=<instationFunction>
 # comma seperated list of arguments to be passed instantiation function.
-export CC_INST_ARGS=<instantiationArguments>
+export CC_ARGS=<instantiationArguments>
 ```
 
-For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_INST_FUNC``` to ```"Init"``` and ```CC_INST_ARGS``` to empty string ```""```
+For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_FUNC``` to ```"Init"``` and ```CC_ARGS``` to empty string ```""```
 
 Execute below command to instantiate chaincode on the peer. 
 ```
-npm run instantiateCC
+npm run instantiateCC -o $ORG_NAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -v $CC_VERSION -l $CC_LANG -c $CHANNEL -f $CC_FUNC -a $CC_ARGS
 ```
 \
 **This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
@@ -182,15 +184,15 @@ npm run instantiateCC
 In addition to [chaincode specific environment variable](#envCC), set below environment variables for invoke function and arguments:
 ```
 # Function to be called on instantion of chaincode
-export CC_INVK_FUNC=<invokeFunction>
+export CC_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
-export CC_INVK_ARGS=<invokeArguments>
+export CC_ARGS=<invokeArguments>
 ```
-Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```CC_INVK_FUNC``` to ```"initLedger"``` and ```CC_INVK_ARGS``` to ```""```.
+Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```CC_FUNC``` to ```"initLedger"``` and ```CC_ARGS``` to ```""```.
 
 Execute below command to invoke the chaincode function:
 ```
-npm run invokeCC
+npm run invokeCC -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f $CC_FUNC -a $CC_ARGS
 ```
 \
 **Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
@@ -200,13 +202,13 @@ npm run invokeCC
 In addition to [chaincode specific environment variable](#envCC), set below environment variables for query function and arguments:
 ```
 # Function to be called on instantion of chaincode
-export CC_QRY_FUNC=<invokeFunction>
+export CC_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
-export CC_QRY_ARGS=<invokeArguments>
+export CC_ARGS=<invokeArguments>
 ```
-Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```CC_QRY_FUNC``` to ```"queryAllCars"``` and ```CC_QRY_ARGS``` to ```""```.
+Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```CC_FUNC``` to ```"queryAllCars"``` and ```CC_ARGS``` to ```""```.
 
 Execute below command to query chaincode:
 ```
-npm run queryCC
+npm run queryCC -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f $CC_FUNC -a $CC_ARGS
 ```
