@@ -39,8 +39,9 @@ async function main() {
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: userId});
 
+        const orgMSP = orgName + 'MSP'
         const client = gateway.getClient();
-        const peers = client.getPeersForOrg();
+        const peers = client.getPeersForOrg(orgMSP);
 
         let installResponse = await client.installChaincode({
            targets: peers,
