@@ -73,36 +73,29 @@ async function main() {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);
         const wallet = new FileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(userId);
         if (!userExists) {
-           console.log('An identity for the admin user does not exist in the wallet');
-           console.log('Run \'npm run enrollAdmin\' command before retrying');
+           console.log('Identity for \'' + userId + '\' user does not exist in the wallet');
+           console.log('Register the user before retrying');
            return;
         }
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
-        console.log('connected to gateway');
 
         const client = gateway.getClient();
         const network = await gateway.getNetwork(channelName);
         var channel = network.getChannel();
-     //   var channel = client.getChannel('testchannel');
         if(!channel) {
             let message = util.format('Channel %s was not defined in the connection profile', channelName);
             console.log(message);
             throw new Error(message);
         }
-
-        const peers = client.getPeersForOrg();
-
-        //process.env.GOPATH='/home/shruti'
-        //console.log(`${peers}`);
-        //console.log(`GOPATH=${process.env['GOPATH']}`);
+        const orgMSP = orgName + 'MSP';
+        const peers = client.getPeersForOrg(orgMSP);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will
@@ -122,7 +115,6 @@ async function main() {
         };
         let invokeResponse = await channel.sendTransactionProposal(request);
         
-        console.log('invoke proposal sent');
         // the returned object has both the endorsement results
         // and the actual proposal, the proposal will be needed
         // later when we send a transaction to the orederer
@@ -147,7 +139,7 @@ async function main() {
         if (all_good) {
             let message = util.format('Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s', proposalResponses[0].response.status, proposalResponses[0].response.message, proposalResponses[0].response.payload, proposalResponses[0].endorsement.signature);
             console.log(`${message}`);
-/*
+
             // wait for the channel-based event hub to tell us
             // that the commit was good or bad on each peer in our organization
             var promises = [];
@@ -159,20 +151,20 @@ async function main() {
                         let message = 'REQUEST_TIMEOUT:' + eh.getPeerAddr();
                         console.log(`${message}`);
                         eh.disconnect();
-                    }, 3000);
+                    }, 10000);
                     eh.registerTxEvent(deployId, (tx, code, block_num) => {
-                        let message = util.format('The chaincode instantiate chaincode transaction has been committed on peer %s',eh.getPeerAddr());
+                        let message = util.format('The invoke chaincode transaction has been committed on peer %s',eh.getPeerAddr());
                         console.log(`${message}`);
                         message = util.format('Transaction %s has status of %s in blocl %s', tx, code, block_num);
                         console.log(`${message}`);
                         clearTimeout(event_timeout);
 
                         if (code !== 'VALID') {
-                            let message = util.format('The instantiate chaincode transaction was invalid, code:%s',code);
+                            let message = util.format('The invoke chaincode transaction was invalid, code:%s',code);
                             console.log(`${message}`);
                             reject(new Error(message));
                         } else {
-                            let message = 'The instantiate chaincode transaction was valid.';
+                            let message = 'The invoke chaincode transaction was valid.';
                             console.log(`${message}`);
                             resolve(message);
                         }
@@ -192,8 +184,6 @@ async function main() {
                 promises.push(instantiateEventPromise);
             });
 
-            console.log ("Setting up even hub done");
-*/
 
             var orderer_request = {
                 txId: tx_id,
@@ -201,23 +191,22 @@ async function main() {
                 proposal: proposal
             };
 
-            var sendPromise = await channel.sendTransaction(orderer_request);
-   /*         // put the send to the orderer last so that the events get registered and
+            var sendPromise = channel.sendTransaction(orderer_request);
+            // put the send to the orderer last so that the events get registered and
             // are ready for the orderering and committing
             promises.push(sendPromise);
 
             let results = await Promise.all(promises);
             console.log(util.format('------->>> R E S P O N S E : %j', results));
             let response = results.pop(); //  orderer results are last in the results
-*/
-            let response = sendPromise;
+
             if (response.status === 'SUCCESS') {
                 console.log('Successfully sent transaction to the orderer.');
             } else {
                 error_message = util.format('Failed to order the transaction. Error code: %s',response.status);
                 console.log(`${error_message}`);
             }
-/*
+
             // now see what each of the event hubs reported
             for(let i in results) {
                 let event_hub_result = results[i];
@@ -230,13 +219,13 @@ async function main() {
                     console.log(event_hub_result.toString());
                 }
             }
-*/
+
         } else {
             error_message = util.format('Failed to send Proposal and receive all good ProposalResponse');
             console.log(`${error_message}`);
         }
         } catch (error) {
-            console.error(`Failed to send instantiate due to error:  ${error.stack} ? ${error.stack} : ${error}`);
+            console.error(`Failed to invoke chaincode due to error:  ${error.stack} ? ${error.stack} : ${error}`);
             process.exit(1);
          }
 }

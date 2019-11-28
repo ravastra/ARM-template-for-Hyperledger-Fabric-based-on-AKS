@@ -1,9 +1,9 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample javascripts which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
+To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
 1. [ Prerequisites](#prerequisties)
-2. [ Setting up environment for the application](#setup)
-3. [ Generation connection profile and admin profile](#profileGen)
+2. [ Setup environment for the application](#setup)
+3. [ Generate connection profile and admin profile](#profileGen)
 3. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
    - [Chaincode operations](#chaincode)
@@ -11,7 +11,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 <a name="prerequisties"></a>
 ## Prerequisites
-The steps given in this document can be execute either from Azure Cloud Shell or any local machine which meets the below mentioned prerequisites:
+The steps given in this document can be execute either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
 
  - Ubuntu 16.04
  - Node.js v8.10.0 or above
@@ -35,12 +35,16 @@ Output: ```6.13.1```
 In the rest of the document, we are assuming that you are running it from Azure cloud shell.
 
 <a name="setup"></a>
-## Setting up environment for the application
+## Setup environment for the application
 The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
 
 Create a project folder say ```app``` to store all the code files as follows:
 - enrollAdmin.js
 - registerUser.js
+- install.js
+- instantiate.js
+- invoke.js
+- query.js
 - package.json
 
 Create ```app``` folder and enter into the folder:
@@ -54,6 +58,10 @@ Download all  JS code files and package.json in the folder:
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/package.json -o package.json
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/install.js -o install.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/instantiate.js -o instantiate.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/invoke.js -o invoke.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/query.js -o query.js
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
@@ -69,7 +77,7 @@ Create ```profile``` directory inside the ```app``` folder
 cd ./app
 mkdir ./profile
 ```
-Generate connection profile and admin profile of the organization using the steps mentioned here and save it on your local machine. 
+Generate connection profile and admin profile of the organization using the steps mentioned [here](#TODO) and save it on your local machine. 
 
 Upload the generated connection profile and Admin profile on Azure Cloud shell.To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
 \
@@ -84,7 +92,6 @@ It will copy connection profile and Admin Profile inside the ```profile``` folde
 
 <a name="Hlfop"></a>
 ## HLF Operations
-
 
 <a name="fabricca"></a>
 ### User identity generation
@@ -113,10 +120,10 @@ Execute below command to register and enroll new user. This command executes reg
 ```
 npm run registerUser
 ```
-*Please note that it uses the admin user identity to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
+*Please note that the admin user identity is used to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
-## Chaincode operation:
+### Chaincode operations
 *Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
 
 <a name="envCC"></a>
@@ -127,7 +134,9 @@ export ORGNAME=<orgName>
 export USER_IDENTITY="admin.$ORGNAME"
 # 'GOPATH' environment variable. This need to be set in case of go chaincode only.
 export GOPATH=<goPath>
-# CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'. For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
+# CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'.
+# For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. 
+# Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
 export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
@@ -142,10 +151,12 @@ export CHANNEL_NAME="testchannel"
 
 <a name="installCC"></a>
 #### To Install Chaincode
-Execute below command to install chaincode on the peer organization. It will install chaincode on all the peer nodes of the organization.
+Execute below command to install chaincode on the peer organization. 
 ```
 npm run installCC
 ```
+\
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
 <a name="instantiateCC"></a>
 #### To Instantiate Chaincode
@@ -156,10 +167,15 @@ export CC_INST_FUNC=<instationFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INST_ARGS=<instantiationArguments>
 ```
-Execute below command to instantiate chaincode on the peer. **This command need to be executed only on one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the chaincode will be instantiated on all the peer nodes in the channel.
+
+For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_INST_FUNC``` to ```"Init"``` and ```CC_INST_ARGS``` to empty string ```""```
+
+Execute below command to instantiate chaincode on the peer. 
 ```
 npm run instantiateCC
 ```
+\
+**This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
 
 <a name="invokeCC"></a>
 #### To Invoke Chaincode
@@ -170,11 +186,14 @@ export CC_INVK_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_INVK_ARGS=<invokeArguments>
 ```
+Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```CC_INVK_FUNC``` to ```"initLedger"``` and ```CC_INVK_ARGS``` to ```""```.
+
 Execute below command to invoke the chaincode function:
 ```
 npm run invokeCC
 ```
-Similar to chaincode instantiation, this command need to be executed only from one peer organization. Once the transaction is succesfully submitted to the orderer, the orderer distrutes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes in the channel.
+\
+**Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
 
 <a name="queryCC"></a>
 #### To Query Chaincode
@@ -185,6 +204,7 @@ export CC_QRY_FUNC=<invokeFunction>
 # comma seperated list of arguments to be passed instantiation function.
 export CC_QRY_ARGS=<invokeArguments>
 ```
+Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```CC_QRY_FUNC``` to ```"queryAllCars"``` and ```CC_QRY_ARGS``` to ```""```.
 
 Execute below command to query chaincode:
 ```
