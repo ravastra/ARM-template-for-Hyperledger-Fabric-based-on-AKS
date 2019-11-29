@@ -77,18 +77,22 @@ Create ```profile``` directory inside the ```app``` folder
 cd ./app
 mkdir ./profile
 ```
-Generate connection profile and admin profile of the organization using the steps mentioned [here](#TODO) and save it on your local machine. 
 
-Upload the generated connection profile and Admin profile on Azure Cloud shell.To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
-\
-Download button always load the files in your home directory. Move these files to the ```profile``` folder created above.
+Set these environment variables on Azure cloud shell
 ```
+# Organization AKS Cluster resource group
+AKS_RESOURCE_GROUP=<resourceGroup>
 # Organization name
 export ORGNAME=<orgname>
-mv ~/gateway.json ./app/profile/$ORGNAME-ccp.json
-mv ~/admin.json ./app/profile/$ORGNAME-admin.json
 ```
-It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```{orgname}-ccp.json``` and ```{orgname}-admin.json``` respectively.
+
+Generate connection profile and admin profile of the organization
+```
+./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
+./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
+```
+
+It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
 
 <a name="Hlfop"></a>
 ## HLF Operations
@@ -107,20 +111,20 @@ export ORGNAME=<orgname>
 export USER_IDENTITY=<username>
 ```
 #### Enroll Admin User
-Execute below command to enroll the Admin user
+Execute below command to import the Admin user identity in wallet
 ```
-npm run enrollAdmin
+npm run importAdmin -o $ORGNAME
 ```
-This command executes enrollAdmin.js to enroll the admin user. The scripts reads admin identity from the admin profile '{orgname}-admin.json' and stores it in wallet for further use.\
+This command executes enrollAdmin.js to enroll the admin user. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
 \
 The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
   
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
-npm run registerUser
+npm run registerUser -o $ORGNAME -u $USER_IDENITY
 ```
-*Please note that the admin user identity is used to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
+*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
 ### Chaincode operations
