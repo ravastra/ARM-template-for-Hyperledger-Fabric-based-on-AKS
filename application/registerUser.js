@@ -7,7 +7,8 @@
 const { FileSystemWallet, Gateway, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-const args = require('yargs')                                                                                                                                              .usage('Usage: <command> [options]')
+const args = require('yargs')
+    .usage('Usage: <command> [options]')
     .command('registerUser', 'Register and enroll new user identity')
     .option({
     'o': {
