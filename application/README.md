@@ -107,7 +107,7 @@ The script use file system wallet to store the identites. It creates a wallet as
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
-npm run registerUser -- -o $ORGNAME -u $USER_IDENITY
+npm run registerUser -- -o $ORGNAME -u $USER_IDENTITY
 ```
 *Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user before issuing this command. Otherwise, this command will fail.*
 
@@ -144,7 +144,7 @@ export CHANNEL=<channelName>
 #### To Install Chaincode
 Execute below command to install chaincode on the peer organization. 
 ```
-npm run installCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $CC_LANG -v CC_VERSION
+npm run installCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $CC_LANG -v $CC_VERSION
 ```
 
 It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then this command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
@@ -157,7 +157,7 @@ npm run installCC -- -h
 #### To Instantiate Chaincode
 Execute below command to instantiate chaincode on the peer. 
 ```
-npm run instantiateCC -- -o $ORG_NAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -v $CC_VERSION -l $CC_LANG -c $CHANNEL -f <instantiateFunc> -a <instantiateFuncArgs>
+npm run instantiateCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -v $CC_VERSION -l $CC_LANG -c $CHANNEL -f <instantiateFunc> -a <instantiateFuncArgs>
 ```
 Pass instantiation function name and comma seperated list of arguments in ```<instantiateFunc>``` and  ```<instantiateFuncArgs>``` respectively. For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```<instantiateFunc>``` to ```"Init"``` and ```<instantiateFuncArgs>``` to empty string ```""```.
 
