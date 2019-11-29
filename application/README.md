@@ -38,14 +38,7 @@ In the rest of the document, we are assuming that you are running it from Azure 
 ## Setup environment for the application
 The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
 
-Create a project folder say ```app``` to store all the code files as follows:
-- enrollAdmin.js
-- registerUser.js
-- install.js
-- instantiate.js
-- invoke.js
-- query.js
-- package.json
+Create a project folder say ```app``` to store all the files as follows:
 
 Create ```app``` folder and enter into the folder:
 ```
@@ -55,13 +48,7 @@ cd app
 
 Download all  JS code files and package.json in the folder:
 ```
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/package.json -o package.json
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/install.js -o install.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/instantiate.js -o instantiate.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/invoke.js -o invoke.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/query.js -o query.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
@@ -74,21 +61,25 @@ Now, you can see a ```node_modules``` folder in the current directoty. All the r
 ## Generate connection profile and admin profile
 Create ```profile``` directory inside the ```app``` folder
 ```
-cd ./app
+cd app
 mkdir ./profile
 ```
-Generate connection profile and admin profile of the organization using the steps mentioned [here](#TODO) and save it on your local machine. 
 
-Upload the generated connection profile and Admin profile on Azure Cloud shell.To upload profile files on azure cloud shell, you can use <img src="https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/shr-chaincode/images/azureCLI_FileUpload_Icon.PNG" width="35" height="35" /> icon at the top of azure cloud shell.\
-\
-Download button always load the files in your home directory. Move these files to the ```profile``` folder created above.
+Set these environment variables on Azure cloud shell
 ```
 # Organization name
 export ORGNAME=<orgname>
-mv ~/gateway.json ./app/profile/$ORGNAME-ccp.json
-mv ~/admin.json ./app/profile/$ORGNAME-admin.json
+# Organization AKS cluster resource group
+AKS_RESOURCE_GROUP=<resourceGroup>
 ```
-It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```{orgname}-ccp.json``` and ```{orgname}-admin.json``` respectively.
+
+Execute below comandd to generate connection profile and admin profile of the organization
+```
+./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
+./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
+```
+
+It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
 
 <a name="Hlfop"></a>
 ## HLF Operations
@@ -107,20 +98,20 @@ export ORGNAME=<orgname>
 export USER_IDENTITY=<username>
 ```
 #### Enroll Admin User
-Execute below command to enroll the Admin user
+Execute below command to import the Admin user identity in wallet
 ```
-npm run enrollAdmin
+npm run importAdmin -o $ORGNAME
 ```
-This command executes enrollAdmin.js to enroll the admin user. The scripts reads admin identity from the admin profile '{orgname}-admin.json' and stores it in wallet for further use.\
+This command executes enrollAdmin.js to enroll the admin user. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
 \
 The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
   
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
-npm run registerUser
+npm run registerUser -o $ORGNAME -u $USER_IDENITY
 ```
-*Please note that the admin user identity is used to issue register command for the new user. Hence, it is mandatory to enroll the admin user before issuing this command. Otherwise, this command will fail.*
+*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user before issuing this command. Otherwise, this command will fail.*
 
 <a name="chaincode"></a>
 ### Chaincode operations
@@ -140,9 +131,11 @@ export GOPATH=<goPath>
 export CC_PATH=<chaincodePath>
 export CC_VERSION=<chaincodeVersion>
 export CC_NAME=<chaincodeName>
-export CC_TYPE=<chaincodeType>
+# Language in which chaincode is written. Supported languages are 'node', 'golang' and 'java'
+# Default value is 'golang'
+export CC_LANG=<chaincodeLanguage>
 # Channel on which chaincode is to be instantiated
-export CHANNEL_NAME="testchannel"
+export CHANNEL=<channelName>
 ```
 - [Install chaincode](#installCC)
 - [Instantiate chaincode](#instantiateCC)
@@ -153,60 +146,53 @@ export CHANNEL_NAME="testchannel"
 #### To Install Chaincode
 Execute below command to install chaincode on the peer organization. 
 ```
-npm run installCC
+npm run installCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $CC_LANG -v CC_VERSION
 ```
-\
-It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then ```installCC``` command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then this command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
+
+See command help for more details on the arguments passed in the command
+```
+npm run installCC -- -h
+```
 <a name="instantiateCC"></a>
 #### To Instantiate Chaincode
-In addition to [chaincode specific environment variable](#envCC), set below environment variables for instantiation function and arguments:
-```
-# Function to be called on instantion of chaincode
-export CC_INST_FUNC=<instationFunction>
-# comma seperated list of arguments to be passed instantiation function.
-export CC_INST_ARGS=<instantiationArguments>
-```
-
-For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```CC_INST_FUNC``` to ```"Init"``` and ```CC_INST_ARGS``` to empty string ```""```
-
 Execute below command to instantiate chaincode on the peer. 
 ```
-npm run instantiateCC
+npm run instantiateCC -- -o $ORG_NAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -v $CC_VERSION -l $CC_LANG -c $CHANNEL -f <instantiateFunc> -a <instantiateFuncArgs>
 ```
-\
+Pass instantiation function name and comma seperated list of arguments in ```<instantiateFunc>``` and  ```<instantiateFuncArgs>``` respectively. For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```<instantiateFunc>``` to ```"Init"``` and ```<instantiateFuncArgs>``` to empty string ```""```.
+
 **This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
+
+See command help for more details on the arguments passed in the command
+```
+npm run instantiateCC -- -h
+```
 
 <a name="invokeCC"></a>
 #### To Invoke Chaincode
-In addition to [chaincode specific environment variable](#envCC), set below environment variables for invoke function and arguments:
-```
-# Function to be called on instantion of chaincode
-export CC_INVK_FUNC=<invokeFunction>
-# comma seperated list of arguments to be passed instantiation function.
-export CC_INVK_ARGS=<invokeArguments>
-```
-Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```CC_INVK_FUNC``` to ```"initLedger"``` and ```CC_INVK_ARGS``` to ```""```.
-
 Execute below command to invoke the chaincode function:
 ```
-npm run invokeCC
+npm run invokeCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f <invokeFunc> -a <invokeFuncArgs>
 ```
-\
+Pass invoke function name and comma seperated list of arguments in ```<invokeFunction>``` and  ```<invokeFuncArgs>``` respectively. Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```<invokeFunction>``` to ```"initLedger"``` and ```<invokeFuncArgs>``` to ```""```.
+
 **Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
 
+See command help for more details on the arguments passed in the command
+```
+npm run invokeCC -- -h
+```
 <a name="queryCC"></a>
 #### To Query Chaincode
-In addition to [chaincode specific environment variable](#envCC), set below environment variables for query function and arguments:
-```
-# Function to be called on instantion of chaincode
-export CC_QRY_FUNC=<invokeFunction>
-# comma seperated list of arguments to be passed instantiation function.
-export CC_QRY_ARGS=<invokeArguments>
-```
-Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```CC_QRY_FUNC``` to ```"queryAllCars"``` and ```CC_QRY_ARGS``` to ```""```.
-
 Execute below command to query chaincode:
 ```
-npm run queryCC
+npm run queryCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f <queryFunction> -a <queryFuncArgs>
+```
+Pass query function name and comma seperated list of arguments in ```<queryFunction>``` and  ```<queryFuncArgs>``` respectively. Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```<queryFunction>``` to ```"queryAllCars"``` and ```<queryArgs>``` to ```""```.
+
+See command help for more details on the arguments passed in the command
+```
+npm run queryCC -- -h
 ```
