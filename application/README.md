@@ -46,16 +46,15 @@ mkdir app
 cd app
 ```
 
-Download all  JS code files and package.json in the folder:
+Execute below command to download all the required scripts and packages:
+
 ```
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
 
-Execute below command to load all the required packages. It will take some time to load all the packages.
-```
-npm install
-```
-Now, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
+It downloads our javscript files. Also, it loads all the required packages. It takes some time to load all the packages.
+
+After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
 <a name="profileGen"></a>
 ## Generate connection profile and admin profile
@@ -102,7 +101,7 @@ Execute below command to import the Admin user identity in wallet
 ```
 npm run importAdmin -o $ORGNAME
 ```
-This command executes enrollAdmin.js to enroll the admin user. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
+This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
 \
 The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
   
