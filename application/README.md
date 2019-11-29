@@ -38,14 +38,7 @@ In the rest of the document, we are assuming that you are running it from Azure 
 ## Setup environment for the application
 The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
 
-Create a project folder say ```app``` to store all the code files as follows:
-- enrollAdmin.js
-- registerUser.js
-- install.js
-- instantiate.js
-- invoke.js
-- query.js
-- package.json
+Create a project folder say ```app``` to store all the files as follows:
 
 Create ```app``` folder and enter into the folder:
 ```
@@ -55,13 +48,7 @@ cd app
 
 Download all  JS code files and package.json in the folder:
 ```
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/package.json -o package.json
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/loadAdminUser.js -o loadAdminUser.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/registerUser.js -o registerUser.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/install.js -o install.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/instantiate.js -o instantiate.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/invoke.js -o invoke.js
-curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/query.js -o query.js
+curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
 
 Execute below command to load all the required packages. It will take some time to load all the packages.
@@ -74,19 +61,19 @@ Now, you can see a ```node_modules``` folder in the current directoty. All the r
 ## Generate connection profile and admin profile
 Create ```profile``` directory inside the ```app``` folder
 ```
-cd ./app
+cd app
 mkdir ./profile
 ```
 
 Set these environment variables on Azure cloud shell
 ```
-# Organization AKS Cluster resource group
-AKS_RESOURCE_GROUP=<resourceGroup>
 # Organization name
 export ORGNAME=<orgname>
+# Organization AKS cluster resource group
+AKS_RESOURCE_GROUP=<resourceGroup>
 ```
 
-Generate connection profile and admin profile of the organization
+Execute below comandd to generate connection profile and admin profile of the organization
 ```
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
