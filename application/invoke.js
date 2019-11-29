@@ -10,7 +10,7 @@
   const util = require('util');
   var args = require('yargs')
       .usage('Usage: <command> [options]')
-      .command('queryCC', 'Perform chaincode query')
+      .command('invokeCC', 'Invoke chaincode transaction')
       .option({
       'o': {
       alias: 'orgName',
@@ -24,17 +24,9 @@
       alias: 'name',
       describe: 'Name of the chaincode',
       },
-      'p': {
-      alias: 'path',
-      describe: 'Path to the chaincode',
-      },
-      'v': {
-      alias: 'version',
-      describe: 'Version of the chaincode',
-      },
-      'l': {
-      alias: 'lang',
-      describe: 'Language the chaincode is written in (default \'golang\')',
+      'c': {
+      alias: 'channel',
+      describe: 'Channel where chaincode is to be invoked',
       },
       'f': {
       alias: 'func',
@@ -63,9 +55,22 @@ async function main() {
 	const userId = args.user;
 	const ccName = args.name;
 	const ccFunc = args.func;
-	const ccArgs = args.args.split(",");
+	const ccArgs = args.args;
+	const channelName = args.channel;
 
-	const channelName = process.env.CHANNEL_NAME;
+        if ((orgName === undefined) ||
+            (userId === undefined) ||
+            (channelName === undefined) ||
+            (ccName === undefined) ||
+            (ccFunc === undefined) ||
+            (ccArgs === undefined)) {
+               console.error("Invalid arguments specified!!!!");
+               console.error("Execute \'npm run invokeCC -- -h\' for help!!!!");
+               process.exit(1);
+        }
+	ccArgs = ccArgs.split(",");
+	console.log(ccFunc + ',' + ccArgs);
+
 	const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');

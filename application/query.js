@@ -25,7 +25,7 @@ var args = require('yargs')
              },
              'c': {
              alias: 'channel',
-             describe: 'Channel on which chaincode is to be queried',
+             describe: 'Channel where chaincode is to be queried',
              },
              'f': {
              alias: 'func',

@@ -8,7 +8,7 @@
   const fs = require('fs');
   var args = require('yargs')
   .usage('Usage: <command> [options]')
-  .command('queryCC', 'Perform chaincode query')
+  .command('installCC', 'Install chaincode')
   .option({
   'o': {
   alias: 'orgName',
@@ -41,7 +41,6 @@
 
 async function main() {
     try {
-
         //const orgName = process.env.ORGNAME;
         //const userId = process.env.USER_IDENTITY;
         //const ccPath = process.env.CC_PATH;
@@ -56,6 +55,21 @@ async function main() {
         const ccName = args.name;
         const ccType = args.lang;
 
+        if ((orgName === undefined) ||
+            (userId === undefined) ||
+            (ccPath === undefined) ||
+            (ccName === undefined) ||
+            (ccVersion === undefined)) {
+               console.error("Invalid arguments specified!!!!");
+               console.error("Execute \'npm run installCC -- -h\' for help!!!!");
+               process.exit(1);
+	}
+
+	if (ccType === undefined)
+	{
+	    ccType = 'golang';
+	}
+														                
         const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');

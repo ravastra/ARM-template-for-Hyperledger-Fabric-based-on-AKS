@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "enrollAdmin": "node enrollAdmin.js",
+    "importAdmin": "node enrollAdmin.js",
     "registerUser": "node registerUser.js",
     "installCC": "node install.js",
     "instantiateCC": "node instantiate.js",

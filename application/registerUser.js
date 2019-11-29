@@ -7,19 +7,34 @@
 const { FileSystemWallet, Gateway, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-const orgName = process.env.ORGNAME;
-const userId = process.env.USER_IDENTITY;
+const args = require('yargs')                                                                                                                                              .usage('Usage: <command> [options]')
+    .command('registerUser', 'Register and enroll new user identity')
+    .option({
+    'o': {
+    alias: 'orgName',
+    describe: 'Name of organization',
+    },
+    'u': {
+    alias: 'user',
+    describe: 'Identity for new user',
+    }
+    })
+.help('h')
+.alias('h', 'help')
+.argv;
 
-const ccpFile = orgName + '-ccp.json';
-const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
-const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
-const ccp = JSON.parse(ccpJSON);
-//const args = require('yargs').argv;
 
 async function main() {
     try {
-        //var username = args.username;
-        //var orgname = args.orgname;
+        const orgName = args.orgName;
+        const userId = args.user;
+        //const orgName = process.env.ORGNAME;
+        //const userId = process.env.USER_IDENTITY;
+
+        const ccpFile = orgName + '-ccp.json';
+        const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
+        const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
+        const ccp = JSON.parse(ccpJSON);
 
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);

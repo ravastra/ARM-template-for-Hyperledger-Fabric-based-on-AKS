@@ -7,22 +7,40 @@
 const { FileSystemWallet, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-
-const orgName = process.env.ORGNAME;
-const adminProfileFile = orgName + '-admin.json';
-const ccpFile = orgName + '-ccp.json';
-
-const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
-const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
-const ccp = JSON.parse(ccpJSON);
-
-const adminProfilePath = path.resolve(__dirname, 'profile', adminProfileFile);
-const adminProfileJSON = fs.readFileSync(adminProfilePath, 'utf8');
-const adminProfile = JSON.parse(adminProfileJSON);
+const args = require('yargs')
+    .usage('Usage: <command> [options]')
+    .command('importAdmin', 'Import Admin user identity in the wallet')
+    .option({
+    'o': {
+    alias: 'orgName',
+    describe: 'Name of organization',
+    }
+    })
+    .help('h')
+    .alias('h', 'help')
+    .argv;
 
 async function main() {
     try {
-        console.log('env variable:' + orgName);
+        //const orgName = process.env.ORGNAME;
+        const orgName = args.orgName;
+	if (orgName === undefined)
+	{
+	    console.error("Invalid argument passed!!!");
+	    console.error("Run \'npm run importAdmin -- -h\' for help.");
+	    process.exit(1);
+	}
+        const adminProfileFile = orgName + '-admin.json';
+        const ccpFile = orgName + '-ccp.json';
+
+        const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
+        const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
+        const ccp = JSON.parse(ccpJSON);
+
+        const adminProfilePath = path.resolve(__dirname, 'profile', adminProfileFile);
+        const adminProfileJSON = fs.readFileSync(adminProfilePath, 'utf8');
+        const adminProfile = JSON.parse(adminProfileJSON);
+
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);
         const wallet = new FileSystemWallet(walletPath);

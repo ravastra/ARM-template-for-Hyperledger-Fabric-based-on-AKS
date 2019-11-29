@@ -10,7 +10,7 @@
   const util = require('util');
   var args = require('yargs')
              .usage('Usage: <command> [options]')
-	     .command('queryCC', 'Perform chaincode query')
+	     .command('instantiateCC', 'Instantiate chaincode')
 	     .option({
 	     'o': {
 	     alias: 'orgName',
@@ -24,10 +24,6 @@
 	     alias: 'name',
 	     describe: 'Name of the chaincode',
 	     },
-             'p': {
-	     alias: 'path',
-	     describe: 'Path to the chaincode',
-	     },
              'v': {
 	     alias: 'version',
 	     describe: 'Version of the chaincode',
@@ -35,6 +31,10 @@
              'l': {
 	     alias: 'lang',
 	     describe: 'Language the chaincode is written in (default \'golang\')',
+	     },
+             'c': {
+	     alias: 'channel',
+	     describe: 'Channel where chaincode is to be instantiated',
 	     },
              'f': {
 	     alias: 'func',
@@ -69,8 +69,26 @@ async function main() {
 	const ccType = args.lang;
 	const ccVersion = args.version;
         const ccFunc = args.func;
-	const ccArgs = args.args.split(",");
-        console.log(ccFunc + ',' + ccArgs);
+	const ccArgs = args.args;
+        if ((orgName === undefined) ||
+            (userId === undefined) ||
+            (channelName === undefined) ||
+            (ccName === undefined) ||
+            (ccVersion === undefined) ||
+            (ccFunc === undefined) ||
+            (ccArgs === undefined)) {
+                 console.error("Invalid arguments specified!!!!");
+                 console.error("Execute \'npm run instantiateCC -- -h\' for help!!!!");
+                 process.exit(1);
+        }
+
+        ccArgs = ccArgs.split(",");
+	console.log(ccFunc + ',' + ccArgs);
+
+	if (ccType === undefined)
+	{
+	    ccType = 'golang';
+	}
 
 	const ccpFile = orgName + '-ccp.json'
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
