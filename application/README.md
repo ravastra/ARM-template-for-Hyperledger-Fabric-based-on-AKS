@@ -11,7 +11,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 <a name="prerequisties"></a>
 ## Prerequisites
-The steps given in this document can be execute either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
+The steps given in this document can be executed either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
 
  - Ubuntu 16.04
  - Node.js v8.10.0 or above
@@ -36,7 +36,7 @@ In the rest of the document, we are assuming that you are running it from Azure 
 
 <a name="setup"></a>
 ## Setup environment for the application
-The below command will setup the environment for execution of javascript. These steps need to be executed only once for an application.
+The below command will setup the environment for the application. These steps need to be executed only once.
 
 Create a project folder say ```app``` to store all the files as follows:
 
@@ -47,7 +47,6 @@ cd app
 ```
 
 Execute below command to download all the required scripts and packages:
-
 ```
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
