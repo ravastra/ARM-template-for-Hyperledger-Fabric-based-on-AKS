@@ -98,7 +98,7 @@ export USER_IDENTITY=<username>
 #### Enroll Admin User
 Execute below command to import the Admin user identity in wallet
 ```
-npm run importAdmin -o $ORGNAME
+npm run importAdmin -- -o $ORGNAME
 ```
 This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
 \
@@ -107,7 +107,7 @@ The script use file system wallet to store the identites. It creates a wallet as
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
-npm run registerUser -o $ORGNAME -u $USER_IDENITY
+npm run registerUser -- -o $ORGNAME -u $USER_IDENITY
 ```
 *Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user before issuing this command. Otherwise, this command will fail.*
 
