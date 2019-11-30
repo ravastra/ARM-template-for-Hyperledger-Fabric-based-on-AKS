@@ -40,7 +40,6 @@ async function main() {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), ccp.wallet);
         const wallet = new FileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(userId);
@@ -71,10 +70,10 @@ async function main() {
         const enrollment = await ca.enroll({ enrollmentID: userId, enrollmentSecret: secret });
         const userIdentity = X509WalletMixin.createIdentity(ccp.organizations[orgName].mspid, enrollment.certificate, enrollment.key.toBytes());
         await wallet.import(userId, userIdentity);
-        console.log('Successfully registered and enrolled user ' + userId + ' and imported it into the wallet');
+        console.log('Successfully registered and enrolled user \'' + userId + '\' and imported it into the wallet');
 
     } catch (error) {
-        console.error('Failed to register user ' + userId + ' : ' + error);
+        console.error('Failed to register user: ' + error);
         process.exit(1);
     }
 }

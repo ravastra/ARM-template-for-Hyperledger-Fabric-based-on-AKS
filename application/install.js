@@ -13,10 +13,12 @@
   'o': {
   alias: 'orgName',
   describe: 'Name of organization',
+  type: 'string',
   },
   'u': {
   alias: 'user',
   describe: 'User Identity',
+  type: 'string'
   },
   'n': {
   alias: 'name',
@@ -29,6 +31,7 @@
   'v': {
   alias: 'version',
   describe: 'Version of the chaincode',
+  type: 'string',
   },
   'l': {
   alias: 'lang',
