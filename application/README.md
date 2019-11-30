@@ -10,7 +10,7 @@ To help customers get started with executing Hyperldger Native commands on their
 
 
 <a name="prerequisties"></a>
-## Prerequisites
+## 1. Prerequisites
 The steps given in this document can be executed either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
 
  - Ubuntu 16.04
@@ -32,13 +32,13 @@ npm -version
 Output: ```6.13.1```
 
 
-In the rest of the document, we are assuming that you are running it from Azure cloud shell.
+In the rest of the document, we are assuming that you are running commands from Azure cloud shell.
 
 <a name="setup"></a>
-## Setup environment for the application
-The below command will setup the environment for the application. These steps need to be executed only once.
+## 2. Setup environment for the application
 
-Create a project folder say ```app``` to store all the files as follows:
+### Download application files
+The first setup for running application is to download all the application files in a folder say ```app```. 
 
 Create ```app``` folder and enter into the folder:
 ```
@@ -46,17 +46,16 @@ mkdir app
 cd app
 ```
 
-Execute below command to download all the required scripts and packages:
+Execute below command to download all the required files and packages:
 ```
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
 
-It downloads our javscript files. Also, it loads all the required packages. It takes some time to load all the packages.
-
-After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
+This command takes some time to load all the packages. After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
 <a name="profileGen"></a>
-## Generate connection profile and admin profile
+
+### Generate connection profile and admin profile
 Create ```profile``` directory inside the ```app``` folder
 ```
 cd app
@@ -65,8 +64,8 @@ mkdir ./profile
 
 Set these environment variables on Azure cloud shell
 ```
-# Organization name
-export ORGNAME=<orgname>
+# Organization name whose connection profile is to be genrated
+ORGNAME=<orgname>
 # Organization AKS cluster resource group
 AKS_RESOURCE_GROUP=<resourceGroup>
 ```
@@ -77,7 +76,16 @@ Execute below comandd to generate connection profile and admin profile of the or
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
 ```
 
-It will copy connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
+It will create connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
+
+### Import Admin User Identity
+The last step is to import organization's Admin user identity in wallet
+```
+npm run importAdmin -- -o $ORGNAME
+```
+This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for executing the HLF operations.\
+\
+The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
 
 <a name="Hlfop"></a>
 ## HLF Operations
@@ -86,24 +94,15 @@ It will copy connection profile and Admin Profile inside the ```profile``` folde
 ### User identity generation
 Execute below commands in the given order to generate new user identites for the your HLF organization. 
 \
-\
-*Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) and [generate the profile files](#profileGen) of the organization.*
+*Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) for the application properly*
+
 #### Set below enviroment variable on azure cloud shell
 ```
 # Organization name for which user identity is to be generated
-export ORGNAME=<orgname>
+ORGNAME=<orgname>
 # Name of new user identity. Identity will be registered with the Fabric-CA using this name.
-export USER_IDENTITY=<username>
+USER_IDENTITY=<username>
 ```
-#### Enroll Admin User
-Execute below command to import the Admin user identity in wallet
-```
-npm run importAdmin -- -o $ORGNAME
-```
-This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for further use.\
-\
-The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
-  
 #### Register and enroll New User
 Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
 ```
@@ -113,27 +112,27 @@ npm run registerUser -- -o $ORGNAME -u $USER_IDENTITY
 
 <a name="chaincode"></a>
 ### Chaincode operations
-*Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) and [generate profile files](#profileGen) of the organization.*
+*Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) of the organization.*
 
 <a name="envCC"></a>
 #### Set below chaincode specific environment variables on Azure Cloud shell:
 ```
 # peer organization name where chaincode is to be installed
-export ORGNAME=<orgName>
-export USER_IDENTITY="admin.$ORGNAME"
-# 'GOPATH' environment variable. This need to be set in case of go chaincode only.
-export GOPATH=<goPath>
+ORGNAME=<orgName>
+USER_IDENTITY="admin.$ORGNAME"
+CC_NAME=<chaincodeName>
+CC_VERSION=<chaincodeVersion>
+# Language in which chaincode is written. Supported languages are 'node', 'golang' and 'java'
+# Default value is 'golang'
+CC_LANG=<chaincodeLanguage>
 # CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'.
 # For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. 
 # Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
-export CC_PATH=<chaincodePath>
-export CC_VERSION=<chaincodeVersion>
-export CC_NAME=<chaincodeName>
-# Language in which chaincode is written. Supported languages are 'node', 'golang' and 'java'
-# Default value is 'golang'
-export CC_LANG=<chaincodeLanguage>
-# Channel on which chaincode is to be instantiated
-export CHANNEL=<channelName>
+CC_PATH=<chaincodePath>
+# 'GOPATH' environment variable. This need to be set in case of go chaincode only.
+export GOPATH=<goPath>
+# Channel on which chaincode is to be instantiated/invoked/queried
+CHANNEL=<channelName>
 ```
 - [Install chaincode](#installCC)
 - [Instantiate chaincode](#instantiateCC)
