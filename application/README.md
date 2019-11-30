@@ -77,18 +77,28 @@ Execute below comandd to generate connection profile and admin profile of the or
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
 ```
+It will create connection profile and Admin Profile of the organization inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively. 
 
-It will create connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
+Similarly, generate connection profile and admin profile for each organization.
 
 <a name="importAdmin"></a>
 ### Import Admin User Identity
-The last step is to import organization's Admin user identity in wallet
+The last step is to import organization's Admin user identity in the wallet.
+
+Set organization name whose admin user is to be imported
+```
+ORGNAME=<organizationName>
+```
+
+Execute below command to import the admin user identity
 ```
 npm run importAdmin -- -o $ORGNAME
 ```
 This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for executing the HLF operations.\
-\
+
 The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
+
+Similarly, import admin user identity for each organization.
 
 <a name="Hlfop"></a>
 ## HLF Operations
