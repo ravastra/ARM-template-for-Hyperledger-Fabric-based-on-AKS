@@ -71,7 +71,6 @@ async function main() {
                process.exit(1);
         }
         ccArgs = ccArgs.split(",");
-        console.log(ccFunc + ',' + ccArgs);
 
         var ccpFile = orgName + '-ccp.json';
         var ccpPath = path.resolve(__dirname, 'profile', ccpFile);
