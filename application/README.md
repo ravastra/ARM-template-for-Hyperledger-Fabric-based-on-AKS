@@ -88,9 +88,9 @@ The last step is to import organization's Admin user identity in the wallet.
 ```
 npm run importAdmin -- -o <orgName>
 ```
-This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '<orgname>-admin.json' and imports it in wallet for executing the HLF operations.\
+This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile ```<orgname>-admin.json``` and imports it in wallet for executing the HLF operations.\
 
-The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '<orgname>', which means a folder named '<orgname>' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
+The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with ```<orgname>```, which means a folder named ```<orgname>``` is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
 
 Similarly, import admin user identity for each organization.
 
