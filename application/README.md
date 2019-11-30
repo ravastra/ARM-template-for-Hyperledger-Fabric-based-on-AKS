@@ -85,21 +85,19 @@ Similarly, generate connection profile and admin profile for each organization.
 ### Import Admin User Identity
 The last step is to import organization's Admin user identity in the wallet.
 
-Set organization name whose admin user is to be imported
 ```
-ORGNAME=<organizationName>
+npm run importAdmin -- -o <orgName>
 ```
+This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '<orgname>-admin.json' and imports it in wallet for executing the HLF operations.\
 
-Execute below command to import the admin user identity
-```
-npm run importAdmin -- -o $ORGNAME
-```
-This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile '{orgname}-admin.json' and imports it in wallet for executing the HLF operations.\
-
-The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '{orgname}', which means a folder named '{orgname}' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
+The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with '<orgname>', which means a folder named '<orgname>' is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
 
 Similarly, import admin user identity for each organization.
 
+Refer command help for more details on the arguments passed in the command
+```
+npm run importAdmin -- -h
+```
 <a name="Hlfop"></a>
 ## HLF Operations
 
@@ -121,8 +119,12 @@ Execute below command to register and enroll new user. This command executes reg
 ```
 npm run registerUser -- -o $ORGNAME -u $USER_IDENTITY
 ```
-*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user before issuing this command. Otherwise, this command will fail.*
+*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user identity in the wallet before issuing this command. Otherwise, this command will fail.*
 
+Refer command help for more details on the arguments passed in the command
+```
+npm run registerUser -- -h
+```
 <a name="chaincode"></a>
 ### Chaincode operations
 *Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) of the organization.*
@@ -161,7 +163,7 @@ npm run installCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $C
 
 It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then this command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
-See command help for more details on the arguments passed in the command
+Refer command help for more details on the arguments passed in the command
 ```
 npm run installCC -- -h
 ```
@@ -175,7 +177,7 @@ Pass instantiation function name and comma seperated list of arguments in ```<in
 
 **This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
 
-See command help for more details on the arguments passed in the command
+Refer command help for more details on the arguments passed in the command
 ```
 npm run instantiateCC -- -h
 ```
@@ -190,7 +192,7 @@ Pass invoke function name and comma seperated list of arguments in ```<invokeFun
 
 **Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
 
-See command help for more details on the arguments passed in the command
+Refer command help for more details on the arguments passed in the command
 ```
 npm run invokeCC -- -h
 ```
@@ -202,7 +204,7 @@ npm run queryCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f <que
 ```
 Pass query function name and comma seperated list of arguments in ```<queryFunction>``` and  ```<queryFuncArgs>``` respectively. Again taking ```fabcar``` chaincode as reference, to query all the cars in the world state set ```<queryFunction>``` to ```"queryAllCars"``` and ```<queryArgs>``` to ```""```.
 
-See command help for more details on the arguments passed in the command
+Refer command help for more details on the arguments passed in the command
 ```
 npm run queryCC -- -h
 ```
