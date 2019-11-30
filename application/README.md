@@ -2,8 +2,10 @@
 To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
 
 1. [ Prerequisites](#prerequisties)
-2. [ Setup environment for the application](#setup)
-3. [ Generate connection profile and admin profile](#profileGen)
+2. [ Setup environment](#setup)
+   - [ Download application files](#downloadFiles)
+   - [ Generate connection profile and admin profile](#profileGen)
+   - [Import admin user identity](#importAdmin)
 3. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
    - [Chaincode operations](#chaincode)
@@ -35,8 +37,9 @@ Output: ```6.13.1```
 In the rest of the document, we are assuming that you are running commands from Azure cloud shell.
 
 <a name="setup"></a>
-## 2. Setup environment for the application
+## 2. Setup environment
 
+<a name="downloadFiles"></a>
 ### Download application files
 The first setup for running application is to download all the application files in a folder say ```app```. 
 
@@ -54,7 +57,6 @@ curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fab
 This command takes some time to load all the packages. After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
 <a name="profileGen"></a>
-
 ### Generate connection profile and admin profile
 Create ```profile``` directory inside the ```app``` folder
 ```
@@ -78,6 +80,7 @@ Execute below comandd to generate connection profile and admin profile of the or
 
 It will create connection profile and Admin Profile inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively.
 
+<a name="importAdmin"></a>
 ### Import Admin User Identity
 The last step is to import organization's Admin user identity in wallet
 ```
