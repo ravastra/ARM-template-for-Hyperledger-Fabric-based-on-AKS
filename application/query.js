@@ -1,5 +1,8 @@
 /*
- * SPDX-License-Identifier: Apache-2.0
+ * FILE: query.js
+ *
+ * DESCRIPTION: Query chaincode
+ *
  */
 
 'use strict';
@@ -14,26 +17,32 @@ var args = require('yargs')
              'o': {
              alias: 'orgName',
              describe: 'Name of organization',
+             type: 'string',
              },
              'u': {
              alias: 'user',
              describe: 'User Identity',
+             type: 'string',
              },
              'n': {
              alias: 'name',
              describe: 'Name of the chaincode',
+             type: 'string',
              },
              'c': {
              alias: 'channel',
              describe: 'Channel where chaincode is to be queried',
+             type: 'string',
              },
              'f': {
              alias: 'func',
              describe: 'Function to be executed',
+             type: 'string',
              },
              'a': {
              alias: 'args',
              describe: 'Comma separated list of arguments to the function',
+             type: 'string',
              },
              })
              .help('h')
@@ -42,18 +51,12 @@ var args = require('yargs')
 
 async function main() {
     try {
-        //const orgName = process.env.ORGNAME;
-        //const userId = process.env.USER_IDENTITY;
-        //const channelName = process.env.CHANNEL_NAME;
-        //const ccName = process.env.CC_NAME;
-        //const ccFunc = process.env.CC_QRY_FUNC;
-        //const ccArgs = process.env.CC_QRY_ARGS;
-        const orgName = args.orgName;
-        const userId = args.user;
-        const channelName = args.channel;
-        const ccName = args.name;
-        const ccFunc = args.func;
-        const ccArgs = args.args;
+        var orgName = args.orgName;
+        var userId = args.user;
+        var channelName = args.channel;
+        var ccName = args.name;
+        var ccFunc = args.func;
+        var ccArgs = args.args;
 
         if ((orgName === undefined) ||
             (userId === undefined) ||
@@ -66,17 +69,17 @@ async function main() {
                 process.exit(1);
             }
 
-        const ccpFile = orgName + '-ccp.json';
-        const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
-        const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
-        const ccp = JSON.parse(ccpJSON);
+        var ccpFile = orgName + '-ccp.json';
+        var ccpPath = path.resolve(__dirname, 'profile', ccpFile);
+        var ccpJSON = fs.readFileSync(ccpPath, 'utf8');
+        var ccp = JSON.parse(ccpJSON);
 
         // Create a new file system based wallet for managing identities.
-        const walletPath = path.join(process.cwd(), ccp.wallet);
-        const wallet = new FileSystemWallet(walletPath);
+        var walletPath = path.join(process.cwd(), ccp.wallet);
+        var wallet = new FileSystemWallet(walletPath);
 
         // Check to see if we've already enrolled the user.
-        const userExists = await wallet.exists(userId);
+        var userExists = await wallet.exists(userId);
         if (!userExists) {
             console.log('An identity for' + userId + ' user does not exist in the wallet');
             console.log('Register the user before retrying');
@@ -84,19 +87,19 @@ async function main() {
         }
 
         // Create a new gateway for connecting to our peer node.
-        const gateway = new Gateway();
+        var gateway = new Gateway();
         await gateway.connect(ccpPath, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
         // Get the network (channel) our contract is deployed to.
-        const network = await gateway.getNetwork(channelName);
+        var network = await gateway.getNetwork(channelName);
 
         // Get the contract from the network.
-        const contract = network.getContract(ccName);
+        var contract = network.getContract(ccName);
 
         // Evaluate the specified transaction.
         // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
         // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
         //const result = await contract.evaluateTransaction('queryAllCars');
-        const result = await contract.evaluateTransaction(ccFunc, ccArgs);
+        var result = await contract.evaluateTransaction(ccFunc, ccArgs);
         console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
     } catch (error) {

@@ -1,6 +1,9 @@
 /*
- * SPDX-License-Identifier: Apache-2.0
-  */
+ * FILE: invoke.js
+ *
+ * DESCRIPTION: Invoke chaincode
+ *
+ */
 
   'use strict';
 
@@ -15,26 +18,32 @@
       'o': {
       alias: 'orgName',
       describe: 'Name of organization',
+      type: 'string',
       },
       'u': {
       alias: 'user',
       describe: 'User Identity',
+      type: 'string',
       },
       'n': {
       alias: 'name',
       describe: 'Name of the chaincode',
+      type: 'string',
       },
       'c': {
       alias: 'channel',
       describe: 'Channel where chaincode is to be invoked',
+      type: 'string',
       },
       'f': {
       alias: 'func',
       describe: 'Function to be executed',
+      type: 'string',
       },
       'a': {
       alias: 'args',
       describe: 'Comma separated list of arguments to the function',
+      type: 'string',
       },
       })
       .help('h')
@@ -44,19 +53,12 @@
 async function main() {
     try {
         var error_message = null;
-        //const orgName = process.env.ORGNAME;
-	//const userId = process.env.USER_IDENTITY;
-	//const ccName = process.env.CC_NAME;
-	//const ccFunc = process.env.CC_INVK_FUNC;
-	//const ccArgs = process.env.CC_INVK_ARGS.split(",");
-	//const channelName = process.env.CHANNEL_NAME;
-
-        const orgName = args.orgName;
-	const userId = args.user;
-	const ccName = args.name;
-	const ccFunc = args.func;
-	const ccArgs = args.args;
-	const channelName = args.channel;
+        var orgName = args.orgName;
+        var userId = args.user;
+        var ccName = args.name;
+        var ccFunc = args.func;
+        var ccArgs = args.args;
+        var channelName = args.channel;
 
         if ((orgName === undefined) ||
             (userId === undefined) ||
@@ -68,16 +70,16 @@ async function main() {
                console.error("Execute \'npm run invokeCC -- -h\' for help!!!!");
                process.exit(1);
         }
-	ccArgs = ccArgs.split(",");
-	console.log(ccFunc + ',' + ccArgs);
+        ccArgs = ccArgs.split(",");
+        console.log(ccFunc + ',' + ccArgs);
 
-	const ccpFile = orgName + '-ccp.json';
-        const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
-        const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
-        const ccp = JSON.parse(ccpJSON);
+        var ccpFile = orgName + '-ccp.json';
+        var ccpPath = path.resolve(__dirname, 'profile', ccpFile);
+        var ccpJSON = fs.readFileSync(ccpPath, 'utf8');
+        var ccp = JSON.parse(ccpJSON);
         // Create a new file system based wallet for managing identities.
-        const walletPath = path.join(process.cwd(), ccp.wallet);
-        const wallet = new FileSystemWallet(walletPath);
+        var walletPath = path.join(process.cwd(), ccp.wallet);
+        var wallet = new FileSystemWallet(walletPath);
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(userId);
@@ -88,19 +90,19 @@ async function main() {
         }
 
         // Create a new gateway for connecting to our peer node.
-        const gateway = new Gateway();
+        var gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
 
-        const client = gateway.getClient();
-        const network = await gateway.getNetwork(channelName);
+        var client = gateway.getClient();
+        var network = await gateway.getNetwork(channelName);
         var channel = network.getChannel();
         if(!channel) {
             let message = util.format('Channel %s was not defined in the connection profile', channelName);
             console.log(message);
             throw new Error(message);
         }
-        const orgMSP = orgName + 'MSP';
-        const peers = client.getPeersForOrg(orgMSP);
+        var orgMSP = orgName + 'MSP';
+        var peers = client.getPeersForOrg(orgMSP);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will
@@ -143,7 +145,7 @@ async function main() {
         }
         if (all_good) {
             let message = util.format('Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s', proposalResponses[0].response.status, proposalResponses[0].response.message, proposalResponses[0].response.payload, proposalResponses[0].endorsement.signature);
-            console.log(`${message}`);
+            //console.log(`${message}`);
 
             // wait for the channel-based event hub to tell us
             // that the commit was good or bad on each peer in our organization
@@ -216,7 +218,7 @@ async function main() {
             for(let i in results) {
                 let event_hub_result = results[i];
                 let event_hub = event_hubs[i];
-                console.log('Event results for event hub :%s',event_hub.getPeerAddr());
+                console.log('Event results for event hub: %s',event_hub.getPeerAddr());
                 if(typeof event_hub_result === 'string') {
                     console.log(event_hub_result);
                 } else {

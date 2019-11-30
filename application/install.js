@@ -1,5 +1,8 @@
 /*
- * SPDX-License-Identifier: Apache-2.0
+ * FILE: install.js
+ *
+ * DESCRIPTION: Install chaincode
+ *
  */
   'use strict';
 
@@ -18,15 +21,17 @@
   'u': {
   alias: 'user',
   describe: 'User Identity',
-  type: 'string'
+  type: 'string',
   },
   'n': {
   alias: 'name',
   describe: 'Name of the chaincode',
+  type: 'string',
   },
   'p': {
   alias: 'path',
   describe: 'Path to the chaincode',
+  type: 'string',
   },
   'v': {
   alias: 'version',
@@ -36,6 +41,7 @@
   'l': {
   alias: 'lang',
   describe: 'Language the chaincode is written in (default \'golang\')',
+  type: 'string',
   }
   })
   .help('h')
@@ -44,19 +50,12 @@
 
 async function main() {
     try {
-        //const orgName = process.env.ORGNAME;
-        //const userId = process.env.USER_IDENTITY;
-        //const ccPath = process.env.CC_PATH;
-        //const ccVersion = process.env.CC_VERSION;
-        //const ccName = process.env.CC_NAME;
-        //const ccType = process.env.CC_TYPE;
-        
-        const orgName = args.orgName;
-        const userId = args.user;
-        const ccPath = args.path;
-        const ccVersion = args.version;
-        const ccName = args.name;
-        const ccType = args.lang;
+        var orgName = args.orgName;
+        var userId = args.user;
+        var ccPath = args.path;
+        var ccVersion = args.version;
+        var ccName = args.name;
+        var ccType = args.lang;
 
         if ((orgName === undefined) ||
             (userId === undefined) ||
@@ -66,13 +65,13 @@ async function main() {
                console.error("Invalid arguments specified!!!!");
                console.error("Execute \'npm run installCC -- -h\' for help!!!!");
                process.exit(1);
-	}
+        }
 
-	if (ccType === undefined)
-	{
-	    ccType = 'golang';
-	}
-														                
+        if (ccType === undefined)
+        {
+            ccType = 'golang';
+        }
+                                                                                                                                
         const ccpFile = orgName + '-ccp.json';
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');

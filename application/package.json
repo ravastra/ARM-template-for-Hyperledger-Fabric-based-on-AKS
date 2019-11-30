@@ -1,8 +1,8 @@
 {
-  "name": "fabcar",
+  "name": "Fabric NodeJS Application",
   "version": "1.0.0",
-  "description": "fabcar",
-  "main": "enrollAdmin.js",
+  "description": "Fabric NodeJS Application",
+  "main": "",
   "dependencies": {
     "fabric-ca-client": "^1.4.4",
     "fabric-network": "^1.4.4"

@@ -1,6 +1,9 @@
 /*
- * SPDX-License-Identifier: Apache-2.0
-  */
+ * FILE: instantiate.js
+ *
+ * DESCRIPTION: Instantiate chaincode
+ *
+ */
 
   'use strict';
 
@@ -10,66 +13,65 @@
   const util = require('util');
   var args = require('yargs')
              .usage('Usage: <command> [options]')
-	     .command('instantiateCC', 'Instantiate chaincode')
-	     .option({
-	     'o': {
-	     alias: 'orgName',
-	     describe: 'Name of organization',
-	     },
-	     'u': {
-	     alias: 'user',
-	     describe: 'User Identity',
-	     },
-	     'n': {
-	     alias: 'name',
-	     describe: 'Name of the chaincode',
-	     },
+             .command('instantiateCC', 'Instantiate chaincode')
+             .option({
+             'o': {
+             alias: 'orgName',
+             describe: 'Name of organization',
+             type: 'string',
+             },
+             'u': {
+             alias: 'user',
+             describe: 'User Identity',
+             type: 'string',
+             },
+             'n': {
+             alias: 'name',
+             describe: 'Name of the chaincode',
+             type: 'string',
+             },
              'v': {
-	     alias: 'version',
-	     describe: 'Version of the chaincode',
-	     },
+             alias: 'version',
+             describe: 'Version of the chaincode',
+             type: 'string',
+             },
              'l': {
-	     alias: 'lang',
-	     describe: 'Language the chaincode is written in (default \'golang\')',
-	     },
+             alias: 'lang',
+             describe: 'Language the chaincode is written in (default \'golang\')',
+             type: 'string',
+             },
              'c': {
-	     alias: 'channel',
-	     describe: 'Channel where chaincode is to be instantiated',
-	     },
+             alias: 'channel',
+             describe: 'Channel where chaincode is to be instantiated',
+             type: 'string',
+             },
              'f': {
-	     alias: 'func',
-	     describe: 'Function to be executed',
-	     },
+             alias: 'func',
+             describe: 'Function to be executed',
+             type: 'string',
+             },
              'a': {
-	     alias: 'args',
-	     describe: 'Comma separated list of arguments to the function',
-	     },
+             alias: 'args',
+             describe: 'Comma separated list of arguments to the function',
+             type: 'string',
+             },
              })
-	     .help('h')
-	     .alias('h', 'help')
-	     .argv;
+             .help('h')
+             .alias('h', 'help')
+             .argv;
 
 async function main() {
     try {
         var error_message = null;
+        var orgName = args.orgName;
+        var userId = args.user;
+        var channelName = args.channel;
+        var ccName = args.name;
+        var ccType = args.lang;
+        var ccVersion = args.version;
+        var ccFunc = args.func;
+        var ccArgs = args.args;
 
-        //const orgName = process.env.ORGNAME;
-	//const userId = process.env.USER_IDENTITY;
-	//const channelName = process.env.CHANNEL_NAME;
-        //const ccName = process.env.CC_NAME;
-	//const ccType = process.env.CC_TYPE;
-	//const ccVersion = process.env.CC_VERSION;
-        //const ccFunc = process.env.CC_INST_FUNC;
-	//const ccArgs = process.env.CC_INST_ARGS.split(",");
-
-        const orgName = args.orgName;
-	const userId = args.user;
-	const channelName = args.channel;
-        const ccName = args.name;
-	const ccType = args.lang;
-	const ccVersion = args.version;
-        const ccFunc = args.func;
-	const ccArgs = args.args;
         if ((orgName === undefined) ||
             (userId === undefined) ||
             (channelName === undefined) ||
@@ -81,16 +83,14 @@ async function main() {
                  console.error("Execute \'npm run instantiateCC -- -h\' for help!!!!");
                  process.exit(1);
         }
-
         ccArgs = ccArgs.split(",");
-	console.log(ccFunc + ',' + ccArgs);
 
-	if (ccType === undefined)
-	{
-	    ccType = 'golang';
-	}
+        if (ccType === undefined)
+        {
+            ccType = 'golang';
+        }
 
-	const ccpFile = orgName + '-ccp.json'
+        const ccpFile = orgName + '-ccp.json'
         const ccpPath = path.resolve(__dirname, 'profile', ccpFile);
         const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
         const ccp = JSON.parse(ccpJSON);
@@ -134,7 +134,7 @@ async function main() {
          chaincodeId: ccName,
          chaincodeType: ccType,
          chaincodeVersion: ccVersion,
-	 fcn: ccFunc,
+         fcn: ccFunc,
          args: ccArgs,
          txId: tx_id
         };
@@ -163,12 +163,12 @@ async function main() {
         }
         if (all_good) {
             let message = util.format('Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s', proposalResponses[0].response.status, proposalResponses[0].response.message, proposalResponses[0].response.payload, proposalResponses[0].endorsement.signature);
-            console.log(`${message}`);
+            //console.log(`${message}`);
 
             // wait for the channel-based event hub to tell us
             // that the commit was good or bad on each peer in our organization
             var promises = [];
-	    var eventTimeout = 10000; /* 10s */
+            var eventTimeout = 10000; /* 10s */
             let event_hubs = channel.getChannelEventHubsForOrg();
             event_hubs.forEach((eh) => {
                 console.log('instantiateEventPromise - setting up event');
@@ -237,7 +237,7 @@ async function main() {
             for(let i in results) {
                 let event_hub_result = results[i];
                 let event_hub = event_hubs[i];
-                console.log('Event results for event hub :%s',event_hub.getPeerAddr());
+                console.log('Event results for event hub: %s',event_hub.getPeerAddr());
                 if(typeof event_hub_result === 'string') {
                     console.log(event_hub_result);
                 } else {
