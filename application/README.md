@@ -1,5 +1,5 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided commands to create new user identity, and install your own chaincode. These commands can be executed from Azure Cloud shell.
+To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing a sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided commands to create new user identity, and install your own chaincode. These commands can be executed from Azure Cloud shell.
 
 1. [ Setup the environment](#setup)
    - [ Download application files](#downloadFiles)
