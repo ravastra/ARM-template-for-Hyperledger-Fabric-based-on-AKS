@@ -1,43 +1,17 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided javascripts to create new user identity, and install your own chaincode.
+To help customers get started with executing Hyperldger Native commands on their HLF network, we are providing some sample application which use fabric NodeJS SDK to perform the HLF operation. We have provided commands to create new user identity, and install your own chaincode. These commands can be executed from Azure Cloud shell.
 
-1. [ Prerequisites](#prerequisties)
-2. [ Setup environment](#setup)
+1. [ Setup the environment](#setup)
    - [ Download application files](#downloadFiles)
    - [ Generate connection profile and admin profile](#profileGen)
    - [Import admin user identity](#importAdmin)
-3. [ HLF Operations](#Hlfop)
+2. [ HLF Operations](#Hlfop)
    - [User identity generation](#fabricca)
    - [Chaincode operations](#chaincode)
 
 
-<a name="prerequisties"></a>
-## 1. Prerequisites
-The steps given in this document can be executed either from Azure Cloud Shell or any machine which meets the below mentioned prerequisites:
-
- - Ubuntu 16.04
- - Node.js v8.10.0 or above
- 
- #### To install Node
-Please follows the steps given on [this](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/) link to install or updated nodeJS version.
-
-You can use below command to check the installed version information:
-- Check Node version
-```
-node --version
-```
-Output: ```v8.10.0```
-- Check npm version
-```
-npm -version
-```
-Output: ```6.13.1```
-
-
-In the rest of the document, we are assuming that you are running commands from Azure cloud shell.
-
 <a name="setup"></a>
-## 2. Setup environment
+## 1. Setup the environment
 
 <a name="downloadFiles"></a>
 ### Download application files
@@ -99,7 +73,7 @@ Refer command help for more details on the arguments passed in the command
 npm run importAdmin -- -h
 ```
 <a name="Hlfop"></a>
-## HLF Operations
+## 2. HLF Operations
 
 <a name="fabricca"></a>
 ### User identity generation
