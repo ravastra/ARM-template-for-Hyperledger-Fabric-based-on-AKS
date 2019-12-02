@@ -178,3 +178,4 @@ PEER_NODE_NAME="peer<peer#>"
 ./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
 ./byn.sh queryDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME"
 ```
+#### 4. Create new user identity
