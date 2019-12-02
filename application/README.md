@@ -44,7 +44,7 @@ mkdir ./profile
 
 Set these environment variables on Azure cloud shell
 ```
-# Organization name whose connection profile is to be genrated
+# Organization name whose connection profile is to be generated
 ORGNAME=<orgname>
 # Organization AKS cluster resource group
 AKS_RESOURCE_GROUP=<resourceGroup>
