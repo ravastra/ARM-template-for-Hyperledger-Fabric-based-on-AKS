@@ -55,9 +55,9 @@ Execute below comand to generate connection profile and admin profile of the org
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
 ```
-It will create connection profile and Admin Profile of the organization inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively. 
+It will create connection profile and admin profile of the organization inside the ```profile``` folder with name ```<orgname>-ccp.json``` and ```<orgname>-admin.json``` respectively. 
 
-Similarly, generate connection profile and admin profile for each organization.
+Similarly, generate connection profile and admin profile for each orderer and peer organization.
 
 <a name="importAdmin"></a>
 ### Import Admin User Identity
