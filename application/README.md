@@ -50,7 +50,7 @@ ORGNAME=<orgname>
 AKS_RESOURCE_GROUP=<resourceGroup>
 ```
 
-Execute below comandd to generate connection profile and admin profile of the organization
+Execute below comand to generate connection profile and admin profile of the organization
 ```
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/gateway/g"| xargs curl > ./profile/$ORGNAME-ccp.json
 ./getConnector.sh $AKS_RESOURCE_GROUP | sed -e "s/{action}/admin/g"| xargs curl > ./profile/$ORGNAME-admin.json
