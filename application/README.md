@@ -28,7 +28,7 @@ Execute below command to download all the required files and packages:
 curl https://raw.githubusercontent.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/shr-nodejs-app/application/setup.sh | bash
 ```
 
-This command takes some time to load all the packages. After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
+This command takes some time as it loads all the packages. After successful execution of command, you can see a ```node_modules``` folder in the current directoty. All the required packages are loaded inside ```node_modules``` folder.
 
 <a name="profileGen"></a>
 ### Generate connection profile and admin profile
@@ -62,9 +62,9 @@ The last step is to import organization's Admin user identity in the wallet.
 ```
 npm run importAdmin -- -o <orgName>
 ```
-This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile ```<orgname>-admin.json``` and imports it in wallet for executing the HLF operations.\
+This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile ```<orgname>-admin.json``` and imports it in wallet for executing HLF operations.\
 
-The script use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with ```<orgname>```, which means a folder named ```<orgname>``` is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user command.
+The scripts use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with ```<orgname>```, which means a folder named ```<orgname>``` is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user and any other HLF operation command.
 
 Similarly, import admin user identity for each organization.
 
