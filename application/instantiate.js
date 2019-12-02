@@ -138,7 +138,7 @@ async function main() {
          args: ccArgs,
          txId: tx_id
         };
-        let instantiateResponse = await channel.sendInstantiateProposal(request, 60000);
+        let instantiateResponse = await channel.sendInstantiateProposal(request, 300000);
         
         // the returned object has both the endorsement results
         // and the actual proposal, the proposal will be needed
