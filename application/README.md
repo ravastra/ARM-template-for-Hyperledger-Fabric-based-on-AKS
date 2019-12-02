@@ -60,7 +60,7 @@ It will create connection profile and admin profile of the organization inside t
 Similarly, generate connection profile and admin profile for each orderer and peer organization.
 
 <a name="importAdmin"></a>
-### Import Admin User Identity
+### Import admin user identity
 The last step is to import organization's Admin user identity in the wallet.
 
 ```
