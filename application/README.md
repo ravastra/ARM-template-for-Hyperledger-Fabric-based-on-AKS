@@ -61,14 +61,14 @@ Similarly, generate connection profile and admin profile for each orderer and pe
 
 <a name="importAdmin"></a>
 ### Import admin user identity
-The last step is to import organization's Admin user identity in the wallet.
+The last step is to import organization's admin user identity in the wallet.
 
 ```
 npm run importAdmin -- -o <orgName>
 ```
-This command executes importAdmin.js to import the admin user identity in the wallet. The script reads admin identity from the admin profile ```<orgname>-admin.json``` and imports it in wallet for executing HLF operations.\
+The above command executes importAdmin.js to import the admin user identity into the wallet. The script reads admin identity from the admin profile ```<orgname>-admin.json``` and imports it in wallet for executing HLF operations.
 
-The scripts use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with ```<orgname>```, which means a folder named ```<orgname>``` is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user and any other HLF operation command.
+The scripts use file system wallet to store the identites. It creates a wallet as per the path specified in ".wallet" field in the connection profile. By default, ".wallet" field is initalized with ```<orgname>```, which means a folder named ```<orgname>``` is created in the current directory to store the identities. If you want to create wallet at some other path, modify ".wallet" field in the connection profile before running enroll admin user and any other HLF operations.
 
 Similarly, import admin user identity for each organization.
 
@@ -81,23 +81,23 @@ npm run importAdmin -- -h
 
 <a name="fabricca"></a>
 ### User identity generation
-Execute below commands in the given order to generate new user identites for the your HLF organization. 
+Execute below commands in the given order to generate new user identites for the HLF organization. 
 \
-*Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) for the application properly*
+*Note: Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) for the application properly*
 
-#### Set below enviroment variable on azure cloud shell
+#### Set below enviroment variables on azure cloud shell
 ```
 # Organization name for which user identity is to be generated
 ORGNAME=<orgname>
 # Name of new user identity. Identity will be registered with the Fabric-CA using this name.
 USER_IDENTITY=<username>
 ```
-#### Register and enroll New User
-Execute below command to register and enroll new user. This command executes registerUser.js to register and enroll the user. It saves the generated user identity in the wallet.
+#### Register and enroll new user
+To register and enroll new user, execute the below command that executes registerUser.js. It saves the generated user identity in the wallet.
 ```
 npm run registerUser -- -o $ORGNAME -u $USER_IDENTITY
 ```
-*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user identity in the wallet before issuing this command. Otherwise, this command will fail.*
+*Note: Admin user identity is used to issue register command for the new user. Hence, it is mandatory to have the admin user identity in the wallet before executing this command. Otherwise, this command will fail.*
 
 Refer command help for more details on the arguments passed in the command
 ```
@@ -105,7 +105,7 @@ npm run registerUser -- -h
 ```
 <a name="chaincode"></a>
 ### Chaincode operations
-*Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) of the organization.*
+*Note: Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) of the organization.*
 
 <a name="envCC"></a>
 #### Set below chaincode specific environment variables on Azure Cloud shell:
@@ -119,41 +119,42 @@ CC_VERSION=<chaincodeVersion>
 # Default value is 'golang'
 CC_LANG=<chaincodeLanguage>
 # CC_PATH contains the path where your chaincode is place. In case of go chaincode, this path is relative to 'GOPATH'.
-# For example, if you chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. 
+# For example, if your chaincode is present at path '/opt/gopath/src/chaincode/chaincode.go'. 
 # Then, set GOPATH to '/opt/gopath' and CC_PATH to 'chaincode'
 CC_PATH=<chaincodePath>
-# 'GOPATH' environment variable. This need to be set in case of go chaincode only.
+# 'GOPATH' environment variable. This needs to be set in case of go chaincode only.
 export GOPATH=<goPath>
 # Channel on which chaincode is to be instantiated/invoked/queried
 CHANNEL=<channelName>
 ```
+The below chaincode operations can be carried out
 - [Install chaincode](#installCC)
 - [Instantiate chaincode](#instantiateCC)
 - [Invoke chaincode](#invokeCC)
 - [Query chaincode](#queryCC)
 
 <a name="installCC"></a>
-#### To Install Chaincode
+#### Install chaincode
 Execute below command to install chaincode on the peer organization. 
 ```
 npm run installCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -l $CC_LANG -v $CC_VERSION
 ```
 
-It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organization in your channel and you want to install chaincode on all of them, then this command need to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
+It will install chaincode on all the peer nodes of the organization set in ```ORGNAME``` environment variable. If there are two or more peer organizations in your channel and you want to install chaincode on all of them, then this command needs to be executed separately for each peer organization. First, set ```ORGNAME``` to ```<peerOrg1Name>``` and issue ```installCC``` command. Then, set ```ORGNAME``` to ```<peerOrg2Name>``` and issue ```installCC``` command. Likewise, execute it for each peer organization.
 
 Refer command help for more details on the arguments passed in the command
 ```
 npm run installCC -- -h
 ```
 <a name="instantiateCC"></a>
-#### To Instantiate Chaincode
+#### Instantiate chaincode
 Execute below command to instantiate chaincode on the peer. 
 ```
 npm run instantiateCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -p $CC_PATH -v $CC_VERSION -l $CC_LANG -c $CHANNEL -f <instantiateFunc> -a <instantiateFuncArgs>
 ```
 Pass instantiation function name and comma seperated list of arguments in ```<instantiateFunc>``` and  ```<instantiateFuncArgs>``` respectively. For example, in [ fabrcar chaincode](https://github.com/hyperledger/fabric-samples/blob/release/chaincode/fabcar/fabcar.go), to instantiate the chaincode set ```<instantiateFunc>``` to ```"Init"``` and ```<instantiateFuncArgs>``` to empty string ```""```.
 
-**This command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
+**This command needs to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organizations in the channel. Hence, the chaincode is instantiated on all the peer nodes on all the peer organizations in the channel.
 
 Refer command help for more details on the arguments passed in the command
 ```
@@ -161,21 +162,21 @@ npm run instantiateCC -- -h
 ```
 
 <a name="invokeCC"></a>
-#### To Invoke Chaincode
+#### Invoke chaincode
 Execute below command to invoke the chaincode function:
 ```
 npm run invokeCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f <invokeFunc> -a <invokeFuncArgs>
 ```
-Pass invoke function name and comma seperated list of arguments in ```<invokeFunction>``` and  ```<invokeFuncArgs>``` respectively. Continuing to the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```<invokeFunction>``` to ```"initLedger"``` and ```<invokeFuncArgs>``` to ```""```.
+Pass invoke function name and comma seperated list of arguments in ```<invokeFunction>``` and  ```<invokeFuncArgs>``` respectively. Continuing with the ```fabcar``` chaincode example, to invoke ```initLedger``` function set ```<invokeFunction>``` to ```"initLedger"``` and ```<invokeFuncArgs>``` to ```""```.
 
-**Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organization in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
+**Similar to chaincode instantiation, this command need to be executed only once from any one peer organization in the channel.** Once the transaction is succesfully submitted to the orderer, the orderer distributes this transaction to all the peer organizations in the channel. Hence, the world state is updated on all peer nodes of all the peer organizations in the channel.
 
 Refer command help for more details on the arguments passed in the command
 ```
 npm run invokeCC -- -h
 ```
 <a name="queryCC"></a>
-#### To Query Chaincode
+#### Query chaincode
 Execute below command to query chaincode:
 ```
 npm run queryCC -- -o $ORGNAME -u $USER_IDENTITY -n $CC_NAME -c $CHANNEL -f <queryFunction> -a <queryFuncArgs>
