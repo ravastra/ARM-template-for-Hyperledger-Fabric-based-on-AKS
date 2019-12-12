@@ -4,6 +4,7 @@ metadata:
   name: fabric-admin
   labels:
      name: fabric-admin
+  namespace: hlf-admin
 spec:
       restartPolicy: Never
       volumes:
@@ -26,7 +27,7 @@ spec:
         - name: fabric-tools-secrets
       containers:
       - name: fabric-admin
-        image: akvhlftemplate.azurecr.io/fabric-tools:preview
+        image: akvhlftemplate.azurecr.io/fabric-tools:tg_NS15
         stdin: true
         tty: true
         command: ["/bin/bash"]
