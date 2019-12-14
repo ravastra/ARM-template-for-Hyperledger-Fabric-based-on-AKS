@@ -177,12 +177,14 @@ uploadOrgMSP() {
 fetchChannelConfig() {
   CHANNEL=$1
   OUTPUT=$2
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   setPeerGlobals 1
 
   echo "Fetching the most recent configuration block for the channel"
   set -x
-  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -197,6 +199,8 @@ fetchChannelConfig() {
 
 handleAddNewPeerOrg() {
   ORDERER_TLS_CA=/var/hyperledger/peer/msp/tlscacerts/ca.crt
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
   PEER_ORG_NAME=$1
   CHANNEL_NAME=$2
@@ -245,7 +249,7 @@ handleAddNewPeerOrg() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -296,13 +300,15 @@ addPeerInConsortium() {
 }
 
 channelCreate() {
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   CHANNEL_NAME=$1
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
 
   setPeerGlobals 1
   ORDERER_TLS_CA="/var/hyperledger/peer/msp/tlscacerts/ca.crt"
   set -x
-  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA &> $LOG_FILE
+  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Channel creation failed"
@@ -375,6 +381,8 @@ joinNodesInChannel() {
   CHANNEL_NAME=$1
   ORDERER_ADDRESS=$2
   storageURI=$3
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   
   rm -rf /tmp/hlf
   mkdir -p /tmp/hlf
@@ -384,7 +392,7 @@ joinNodesInChannel() {
   ORDERER_TLS_CA="/tmp/hlf/orderer/tlscacerts/ca.crt"
   setPeerGlobals 1
   set -x
-  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -555,6 +563,8 @@ addPeerInChannel() {
   CHANNEL_NAME=$2
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
   STORAGE_URI=$3
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   echo "============ Downloading ${PEER_ORG_NAME} MSP ==============="
   echo
@@ -601,7 +611,7 @@ addPeerInChannel() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE

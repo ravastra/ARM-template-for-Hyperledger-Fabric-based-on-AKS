@@ -148,11 +148,13 @@ handleInstantiateChaincode() {
   CHANNEL_NAME=$2
   ORDERER_ADDRESS=$3
   ORDERER_TLS_CA=$4
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   setPeerGlobals $PEER
 
   set -x
-  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","1000","b","2000"]}' &> $LOG_FILE
+  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","1000","b","2000"]}' &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Chaincode instantiation on peer${PEER} of org ${HLF_ORG_NAME} on channel '$CHANNEL_NAME' failed"
@@ -168,10 +170,12 @@ chaincodeInvoke() {
   ORDERER_ADDRESS=$3
   ORDERER_TLS_CA=$4
   CHAINCODE_NAME="mycc"
+  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
+  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   setPeerGlobals $PEER
 
   set -x
-  peer chaincode invoke -o ${ORDERER_ADDRESS} --tls --cafile $ORDERER_TLS_CA -C $CHANNEL_NAME -n ${CHAINCODE_NAME} -c '{"Args":["invoke","a","b","10"]}' &> $LOG_FILE
+  peer chaincode invoke -o ${ORDERER_ADDRESS} --tls --cafile $ORDERER_TLS_CA --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE -C $CHANNEL_NAME -n ${CHAINCODE_NAME} -c '{"Args":["invoke","a","b","10"]}' &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Invoke execution on $PEER failed "
