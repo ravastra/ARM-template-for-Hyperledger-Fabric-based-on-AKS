@@ -1,11 +1,9 @@
 # Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperledger native commands on HLF network on AKS, we are providing a sample application which uses fabric NodeJS SDK to perform the HLF operations. We have provided commands to 
-- Create new user identity 
-- Install your own chaincode
+To help customers get started with executing Hyperledger native commands on HLF network on AKS, we are providing a sample application which uses fabric NodeJS SDK to perform the HLF operations. We have provided commands to Create new user identity and Install your own chaincode.
 
 These commands can be executed from Azure Cloud shell. To be able to use this application you will have to go through the prerequisites 
 
-## [ Prerequisites](#prerequisites)
+## Prerequisites
    - [ Download application files](#downloadFiles)
    - [ Generate connection profile and admin profile](#profileGen)
    - [Import admin user identity](#importAdmin)
