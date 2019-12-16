@@ -16,10 +16,10 @@ Organizations:
     - &{ORG_NAME}
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: {ORG_NAME}MSP
+        Name: {ORG_NAME}
 
         # ID to load the MSP definition as
-        ID: {ORG_NAME}MSP
+        ID: {ORG_NAME}
 
         MSPDir: msp
 
