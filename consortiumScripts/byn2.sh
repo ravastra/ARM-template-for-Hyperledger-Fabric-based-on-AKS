@@ -7,6 +7,11 @@ CHAINCODE_NAME="mycc"
 VERSION="1.0"
 LANGUAGE="golang"
 LOG_FILE="/tmp/log.txt"
+DELAY=3
+MAX_RETRY=10
+COUNTER=1
+ADMIN_TLS_CERTFILE=/var/hyperledger/peer/tls/cert.pem
+ADMIN_TLS_KEYFILE=/var/hyperledger/peer/tls/key.pem
 
 #import utils
 . ./utils.sh
@@ -177,8 +182,6 @@ uploadOrgMSP() {
 fetchChannelConfig() {
   CHANNEL=$1
   OUTPUT=$2
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   setPeerGlobals 1
 
@@ -199,8 +202,6 @@ fetchChannelConfig() {
 
 handleAddNewPeerOrg() {
   ORDERER_TLS_CA=/var/hyperledger/peer/msp/tlscacerts/ca.crt
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
   PEER_ORG_NAME=$1
   CHANNEL_NAME=$2
@@ -300,8 +301,6 @@ addPeerInConsortium() {
 }
 
 channelCreate() {
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   CHANNEL_NAME=$1
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
 
@@ -381,8 +380,6 @@ joinNodesInChannel() {
   CHANNEL_NAME=$1
   ORDERER_ADDRESS=$2
   storageURI=$3
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   
   rm -rf /tmp/hlf
   mkdir -p /tmp/hlf
@@ -563,8 +560,6 @@ addPeerInChannel() {
   CHANNEL_NAME=$2
   ORDERER_ADDRESS="orderer1.${HLF_DOMAIN_NAME}:443"
   STORAGE_URI=$3
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   echo "============ Downloading ${PEER_ORG_NAME} MSP ==============="
   echo

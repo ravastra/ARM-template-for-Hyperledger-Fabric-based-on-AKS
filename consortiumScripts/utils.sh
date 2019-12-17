@@ -1,9 +1,5 @@
 #!/bin/bash
 
-DELAY=3
-MAX_RETRY=10
-COUNTER=1
-
 verifyTool()
 {
     toolName=$1
@@ -148,8 +144,6 @@ handleInstantiateChaincode() {
   CHANNEL_NAME=$2
   ORDERER_ADDRESS=$3
   ORDERER_TLS_CA=$4
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
 
   setPeerGlobals $PEER
 
@@ -170,8 +164,6 @@ chaincodeInvoke() {
   ORDERER_ADDRESS=$3
   ORDERER_TLS_CA=$4
   CHAINCODE_NAME="mycc"
-  ADMIN_TLS_CERTFILE=/var/hyperledger/peer/msp/signcerts/cert.pem
-  ADMIN_TLS_KEYFILE=/var/hyperledger/peer/msp/keystore/key.pem
   setPeerGlobals $PEER
 
   set -x
