@@ -178,4 +178,4 @@ PEER_NODE_NAME="peer<peer#>"
 ./byn.sh invokeDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME" "$ORDERER_END_POINT" "$AZURE_FILE_CONNECTION_STRING"
 ./byn.sh queryDemoChaincode "$PEER_NODE_NAME" "$CHANNEL_NAME"
 ```
-#### 4. Create new user identity
+Please refer the Fabric node JS application documentation [here](https://github.com/ravastra/ARM-template-for-Hyperledger-Fabric-based-on-AKS/blob/master/application/README.md#fabric-nodejs-sdk-to-run-native-hlf-operations) to carry out operations such as creating connection profile, running your own chaincode and creating new user identity 
