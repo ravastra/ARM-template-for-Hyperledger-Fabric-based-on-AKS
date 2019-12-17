@@ -7,6 +7,11 @@ CHAINCODE_NAME="mycc"
 VERSION="1.0"
 LANGUAGE="golang"
 LOG_FILE="/tmp/log.txt"
+DELAY=3
+MAX_RETRY=10
+COUNTER=1
+ADMIN_TLS_CERTFILE=/var/hyperledger/peer/tls/cert.pem
+ADMIN_TLS_KEYFILE=/var/hyperledger/peer/tls/key.pem
 
 #import utils
 . ./utils.sh
@@ -182,7 +187,7 @@ fetchChannelConfig() {
 
   echo "Fetching the most recent configuration block for the channel"
   set -x
-  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -245,7 +250,7 @@ handleAddNewPeerOrg() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -302,7 +307,7 @@ channelCreate() {
   setPeerGlobals 1
   ORDERER_TLS_CA="/var/hyperledger/peer/msp/tlscacerts/ca.crt"
   set -x
-  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA &> $LOG_FILE
+  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Channel creation failed"
@@ -384,7 +389,7 @@ joinNodesInChannel() {
   ORDERER_TLS_CA="/tmp/hlf/orderer/tlscacerts/ca.crt"
   setPeerGlobals 1
   set -x
-  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -601,7 +606,7 @@ addPeerInChannel() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
