@@ -26,7 +26,7 @@ spec:
         - name: fabric-tools-secrets
       containers:
       - name: fabric-admin
-        image: akvhlftemplate.azurecr.io/fabric-tools:preview
+        image: akvhlftemplate.azurecr.io/fabric-tools:1.0.0
         stdin: true
         tty: true
         command: ["/bin/bash"]
