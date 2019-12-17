@@ -118,8 +118,8 @@ async function main() {
             let message = util.format('Channel %s was not defined in the connection profile', channelName);
             throw new Error(message);
         }
-        const orgMSP = orgName + 'MSP';
-        const peers = client.getPeersForOrg(orgMSP);
+        const orgMSPID = orgName;
+        const peers = client.getPeersForOrg(orgMSPID);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will

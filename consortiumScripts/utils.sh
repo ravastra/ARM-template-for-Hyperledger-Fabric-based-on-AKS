@@ -16,7 +16,7 @@ verifyTool()
 
 setPeerGlobals() {
    PEER=$1
-   export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}MSP"
+   export CORE_PEER_LOCALMSPID="${HLF_ORG_NAME}"
    export CORE_PEER_ADDRESS="peer${PEER}.${HLF_DOMAIN_NAME}:443"
 }
 
