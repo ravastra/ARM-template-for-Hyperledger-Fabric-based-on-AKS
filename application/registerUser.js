@@ -49,7 +49,7 @@ async function main() {
         }
 
         // Check to see if we've already enrolled the admin user.
-	const adminId  = 'admin.' + orgName;
+        const adminId  = 'admin.' + orgName;
         const adminExists = await wallet.exists(adminId);
         if (!adminExists) {
             console.log('An identity for admin user ' + adminId + ' does not exist in the wallet');

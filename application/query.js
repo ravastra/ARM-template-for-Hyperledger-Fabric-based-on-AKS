@@ -90,7 +90,7 @@ async function main() {
         var gateway = new Gateway();
         await gateway.connect(ccpPath, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
 
-	// Set client TLS certificate and key for mutual TLS
+        // Set client TLS certificate and key for mutual TLS
         var client = gateway.getClient();
         var userTlsCert = await wallet.export(userId+'-tls');
         client.setTlsClientCertAndKey(userTlsCert.certificate, userTlsCert.privateKey);
