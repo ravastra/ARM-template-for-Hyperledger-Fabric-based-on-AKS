@@ -22,6 +22,12 @@ spec:
       - name: signcerts
         secret:
            secretName: hlf-admin-idcert
+      - name: tls-key
+        secret:
+           secretName: hlf-admin-tls-idkey
+      - name: tls-cert
+        secret:
+           secretName: hlf-admin-tls-idcert
       imagePullSecrets:
         - name: fabric-tools-secrets
       containers:
@@ -46,6 +52,14 @@ spec:
         - mountPath: /var/hyperledger/peer/msp/signcerts
           name: signcerts
           readOnly: true
+        - mountPath: /var/hyperledger/peer/tls/key.pem
+          name: tls-key
+          readOnly: true
+          subPath: key.pem
+        - mountPath: /var/hyperledger/peer/tls/cert.pem
+          name: tls-cert
+          readOnly: true
+          subPath: cert.pem
         env:
         - name: HLF_ORG_NAME
           valueFrom:
@@ -69,6 +83,14 @@ spec:
         - name: CORE_PEER_TLS_ENABLED
           value: "true"
         - name: CORE_PEER_TLS_ROOTCERT_FILE
+          value: /var/hyperledger/peer/msp/tlscacerts/ca.crt
+        - name: CORE_PEER_TLS_CLIENTAUTHREQUIRED
+          value: "true"
+        - name: CORE_PEER_TLS_CLIENTCERT_FILE
+          value: /var/hyperledger/peer/tls/cert.pem
+        - name: CORE_PEER_TLS_CLIENTKEY_FILE
+          value: /var/hyperledger/peer/tls/key.pem
+        - name: CORE_PEER_TLS_CLIENTROOTCAS_FILES
           value: /var/hyperledger/peer/msp/tlscacerts/ca.crt
         - name: CORE_PEER_MSPCONFIGPATH
           value: /var/hyperledger/peer/msp

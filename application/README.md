@@ -1,21 +1,18 @@
-# Demonstrate HLF operation using Fabric NodeJS SDK
-To help customers get started with executing Hyperledger native commands on HLF network on AKS, we are providing a sample application which uses fabric NodeJS SDK to perform the HLF operations. We have provided commands to 
-- Create new user identity 
-- Install your own chaincode
+# Fabric NodeJS SDK to run native HLF operations
+To help customers get started with executing Hyperledger native commands on HLF network on AKS, we are providing a sample application which uses fabric NodeJS SDK to perform the HLF operations. We have provided commands to Create new user identity and Install your own chaincode.
 
-These commands can be executed from Azure Cloud shell.
+These commands can be executed from Azure Cloud shell. To be able to use this application you will have to go through the prerequisites 
 
-1. [ Setup the environment](#setup)
+## Prerequisites
    - [ Download application files](#downloadFiles)
    - [ Generate connection profile and admin profile](#profileGen)
    - [Import admin user identity](#importAdmin)
-2. [ HLF Operations](#Hlfop)
-   - [User identity generation](#fabricca)
-   - [Chaincode operations](#chaincode)
+   
+   
+After you have done the initial setup, you can use the SDK to achieve the below operations
+1.  [User identity generation](#fabricca)
+2.  [Chaincode operations](#chaincode)
 
-
-<a name="setup"></a>
-## 1. Setup the environment
 
 <a name="downloadFiles"></a>
 ### Download application files
@@ -76,11 +73,9 @@ Refer command help for more details on the arguments passed in the command
 ```
 npm run importAdmin -- -h
 ```
-<a name="Hlfop"></a>
-## 2. HLF Operations
 
 <a name="fabricca"></a>
-### User identity generation
+### 1. User identity generation
 Execute below commands in the given order to generate new user identites for the HLF organization. 
 \
 *Note: Before starting with user identity generation steps, make sure that you have [setup the environment](#setup) for the application properly*
@@ -104,7 +99,7 @@ Refer command help for more details on the arguments passed in the command
 npm run registerUser -- -h
 ```
 <a name="chaincode"></a>
-### Chaincode operations
+### 2. Chaincode operations
 *Note: Before starting with any chaincode operation, make sure that you have [setup the environment](#setup) of the organization.*
 
 <a name="envCC"></a>
