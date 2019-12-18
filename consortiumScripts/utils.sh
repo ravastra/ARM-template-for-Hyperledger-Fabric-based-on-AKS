@@ -1,5 +1,9 @@
 #!/bin/bash
 
+DELAY=3
+MAX_RETRY=10
+COUNTER=1
+
 verifyTool()
 {
     toolName=$1
@@ -148,7 +152,7 @@ handleInstantiateChaincode() {
   setPeerGlobals $PEER
 
   set -x
-  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","1000","b","2000"]}' &> $LOG_FILE
+  peer chaincode instantiate -o "${ORDERER_ADDRESS}" --tls --cafile ${ORDERER_TLS_CA} -C "${CHANNEL_NAME}" -n "${CHAINCODE_NAME}" -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","1000","b","2000"]}' &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Chaincode instantiation on peer${PEER} of org ${HLF_ORG_NAME} on channel '$CHANNEL_NAME' failed"
@@ -167,7 +171,7 @@ chaincodeInvoke() {
   setPeerGlobals $PEER
 
   set -x
-  peer chaincode invoke -o ${ORDERER_ADDRESS} --tls --cafile $ORDERER_TLS_CA --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE -C $CHANNEL_NAME -n ${CHAINCODE_NAME} -c '{"Args":["invoke","a","b","10"]}' &> $LOG_FILE
+  peer chaincode invoke -o ${ORDERER_ADDRESS} --tls --cafile $ORDERER_TLS_CA -C $CHANNEL_NAME -n ${CHAINCODE_NAME} -c '{"Args":["invoke","a","b","10"]}' &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Invoke execution on $PEER failed "

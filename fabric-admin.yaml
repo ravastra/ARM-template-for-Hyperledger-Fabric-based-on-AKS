@@ -22,17 +22,11 @@ spec:
       - name: signcerts
         secret:
            secretName: hlf-admin-idcert
-      - name: tls-key
-        secret:
-           secretName: hlf-admin-tls-idkey
-      - name: tls-cert
-        secret:
-           secretName: hlf-admin-tls-idcert
       imagePullSecrets:
         - name: fabric-tools-secrets
       containers:
       - name: fabric-admin
-        image: akvhlftemplate.azurecr.io/fabric-tools:shr_tls
+        image: akvhlftemplate.azurecr.io/fabric-tools:1.0.0
         stdin: true
         tty: true
         command: ["/bin/bash"]
@@ -52,14 +46,6 @@ spec:
         - mountPath: /var/hyperledger/peer/msp/signcerts
           name: signcerts
           readOnly: true
-        - mountPath: /var/hyperledger/peer/tls/key.pem
-          name: tls-key
-          readOnly: true
-          subPath: key.pem
-        - mountPath: /var/hyperledger/peer/tls/cert.pem
-          name: tls-cert
-          readOnly: true
-          subPath: cert.pem
         env:
         - name: HLF_ORG_NAME
           valueFrom:
