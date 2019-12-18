@@ -105,8 +105,8 @@ async function main() {
             console.log(message);
             throw new Error(message);
         }
-        var orgMSP = orgName + 'MSP';
-        var peers = client.getPeersForOrg(orgMSP);
+        var orgMSPID = orgName;
+        var peers = client.getPeersForOrg(orgMSPID);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will

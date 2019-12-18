@@ -52,12 +52,14 @@ spec:
         - mountPath: /var/hyperledger/peer/msp/signcerts
           name: signcerts
           readOnly: true
-        - mountPath: /var/hyperledger/peer/tls
+        - mountPath: /var/hyperledger/peer/tls/key.pem
           name: tls-key
           readOnly: true
-        - mountPath: /var/hyperledger/peer/tls
+          subPath: key.pem
+        - mountPath: /var/hyperledger/peer/tls/cert.pem
           name: tls-cert
           readOnly: true
+          subPath: cert.pem
         env:
         - name: HLF_ORG_NAME
           valueFrom:

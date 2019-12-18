@@ -219,7 +219,7 @@ handleAddNewPeerOrg() {
   export FABRIC_CFG_PATH=$PWD
   sed -e "s/{ORG_NAME}/${PEER_ORG_NAME}/g" /var/hyperledger/consortiumScripts/configtx-template.yaml > ./configtx.yaml
 
-  configtxgen -printOrg ${PEER_ORG_NAME}MSP > ${PEER_ORG_NAME}.json 2> $LOG_FILE
+  configtxgen -printOrg ${PEER_ORG_NAME} > ${PEER_ORG_NAME}.json 2> $LOG_FILE
   res=$?
   verifyResult $res "Failed to generate ${PEER_ORG_NAME} config material"
   )
@@ -232,7 +232,7 @@ handleAddNewPeerOrg() {
 
 
   # Modify the configuration to append the new org
-  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"SampleConsortium\": {\"groups\": {\"${PEER_ORG_NAME}MSP\":.[1]}}}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
+  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"SampleConsortium\": {\"groups\": {\"${PEER_ORG_NAME}\":.[1]}}}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
   res=$?
   verifyResult $res "Failed to create new confguration block"
 
@@ -573,7 +573,7 @@ addPeerInChannel() {
   export FABRIC_CFG_PATH=$PWD
   sed -e "s/{ORG_NAME}/${PEER_ORG_NAME}/g" /var/hyperledger/consortiumScripts/configtx-template.yaml > ./configtx.yaml
 
-  configtxgen -printOrg ${PEER_ORG_NAME}MSP > ${PEER_ORG_NAME}.json 2> $LOG_FILE
+  configtxgen -printOrg ${PEER_ORG_NAME} > ${PEER_ORG_NAME}.json 2> $LOG_FILE
   res=$?
   verifyResult $res "Failed to generate ${PEER_ORG_NAME} config material in JOSN format"
   )
@@ -588,7 +588,7 @@ addPeerInChannel() {
 
 
   # Modify the configuration to append the new org
-  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${PEER_ORG_NAME}MSP\":.[1]}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
+  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${PEER_ORG_NAME}\":.[1]}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
   res=$?
   verifyResult $res "Failed to generate new configuration block"
 
