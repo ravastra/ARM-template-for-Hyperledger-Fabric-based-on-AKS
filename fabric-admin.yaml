@@ -70,6 +70,14 @@ spec:
           value: "true"
         - name: CORE_PEER_TLS_ROOTCERT_FILE
           value: /var/hyperledger/peer/msp/tlscacerts/ca.crt
+        - name: CORE_PEER_TLS_CLIENTAUTHREQUIRED
+          value: "true"
+        - name: CORE_PEER_TLS_CLIENTCERT_FILE
+          value: /var/hyperledger/peer/tls/cert.pem
+        - name: CORE_PEER_TLS_CLIENTKEY_FILE
+          value: /var/hyperledger/peer/tls/key.pem
+        - name: CORE_PEER_TLS_CLIENTROOTCAS_FILES
+          value: /var/hyperledger/peer/msp/tlscacerts/ca.crt
         - name: CORE_PEER_MSPCONFIGPATH
           value: /var/hyperledger/peer/msp
         workingDir: /var/hyperledger/consortiumScripts

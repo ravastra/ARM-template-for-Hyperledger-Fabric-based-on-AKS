@@ -93,6 +93,11 @@ async function main() {
         await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
 
         var client = gateway.getClient();
+
+        // Set client TLS certificate and key for mutual TLS
+        var userTlsCert = await wallet.export(userId+'-tls');
+        client.setTlsClientCertAndKey(userTlsCert.certificate, userTlsCert.privateKey);
+
         var network = await gateway.getNetwork(channelName);
         var channel = network.getChannel();
         if(!channel) {
