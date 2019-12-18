@@ -32,7 +32,7 @@ spec:
         - name: fabric-tools-secrets
       containers:
       - name: fabric-admin
-        image: akvhlftemplate.azurecr.io/fabric-tools:tg_namespace6
+        image: akvhlftemplate.azurecr.io/fabric-tools:1.0.0
         stdin: true
         tty: true
         command: ["/bin/bash"]
