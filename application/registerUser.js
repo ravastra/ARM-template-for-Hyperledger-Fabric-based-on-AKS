@@ -72,6 +72,11 @@ async function main() {
         await wallet.import(userId, userIdentity);
         console.log('Successfully registered and enrolled user \'' + userId + '\' and imported it into the wallet');
 
+        const secret = await ca.register({ enrollmentID: userId+'.tls', role: 'client' }, adminIdentity);
+        const enrollment = await ca.enroll({ enrollmentID: userId+'.tls', enrollmentSecret: secret });
+        const userIdentity = X509WalletMixin.createIdentity(ccp.organizations[orgName].mspid, enrollment.certificate, enrollment.key.toBytes());
+        await wallet.import(userId+'-tls', userIdentity);
+        console.log('Successfully registered and enrolled user \'' + userId + '\' TLS certificate and imported it into the wallet');
     } catch (error) {
         console.error('Failed to register user: ' + error);
         process.exit(1);

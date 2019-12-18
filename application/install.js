@@ -97,7 +97,7 @@ async function main() {
         const client = gateway.getClient();
 
       	// Set client TLS certificate and key for mutual TLS
-        const userCert = await wallet.export(userId);
+        const userCert = await wallet.export(userId+'-tls');
         client.setTlsClientCertAndKey(userCert.certificate, userCert.privateKey);
 
         const peers = client.getPeersForOrg(orgMSPID);

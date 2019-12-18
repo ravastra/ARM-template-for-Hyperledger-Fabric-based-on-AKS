@@ -57,6 +57,12 @@ async function main() {
 	const keyBase64 = new Buffer(adminProfile.private_key, 'base64');
         const adminUserIdentity = X509WalletMixin.createIdentity(adminProfile.msp_id, certBase64.toString('ascii'), keyBase64.toString('ascii'));
         await wallet.import(adminProfile.name, adminUserIdentity);
+        
+	// Import the new identity into the wallet.
+	const tls_certBase64 = new Buffer(adminProfile.tls_cert, 'base64');
+	const tls_keyBase64 = new Buffer(adminProfile.tls_private_key, 'base64');
+        const adminUserTlsIdentity = X509WalletMixin.createIdentity(adminProfile.msp_id, tls_certBase64.toString('ascii'), tls_keyBase64.toString('ascii'));
+        await wallet.import(adminProfile.name+'-tls', adminUserTlsIdentity);
         console.log(`Successfully imported admin user ${adminProfile.name} identity into the wallet`);
 
     } catch (error) {
