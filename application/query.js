@@ -89,12 +89,6 @@ async function main() {
         // Create a new gateway for connecting to our peer node.
         var gateway = new Gateway();
         await gateway.connect(ccpPath, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
-
-	// Set client TLS certificate and key for mutual TLS
-        var client = gateway.getClient();
-        var userCert = await wallet.export(userId);
-        client.setTlsClientCertAndKey(userCert.certificate, userCert.privateKey);
-
         // Get the network (channel) our contract is deployed to.
         var network = await gateway.getNetwork(channelName);
 
