@@ -112,14 +112,19 @@ async function main() {
         await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: false } });
 
         const client = gateway.getClient();
+
+        // Set client TLS certificate and key for mutual TLS
+        const userTlsCert = await wallet.export(userId+'-tls');
+        client.setTlsClientCertAndKey(userTlsCert.certificate, userTlsCert.privateKey);
+
         const network = await gateway.getNetwork(channelName);
         var channel = network.getChannel();
         if(!channel) {
             let message = util.format('Channel %s was not defined in the connection profile', channelName);
             throw new Error(message);
         }
-        const orgMSP = orgName + 'MSP';
-        const peers = client.getPeersForOrg(orgMSP);
+        const orgMSPID = orgName;
+        const peers = client.getPeersForOrg(orgMSPID);
 
         var tx_id = client.newTransactionID(true); // Get an admin based transactionID
         // An admin based transactionID will

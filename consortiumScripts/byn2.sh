@@ -7,6 +7,11 @@ CHAINCODE_NAME="mycc"
 VERSION="1.0"
 LANGUAGE="golang"
 LOG_FILE="/tmp/log.txt"
+DELAY=3
+MAX_RETRY=10
+COUNTER=1
+ADMIN_TLS_CERTFILE=/var/hyperledger/peer/tls/cert.pem
+ADMIN_TLS_KEYFILE=/var/hyperledger/peer/tls/key.pem
 
 #import utils
 . ./utils.sh
@@ -182,7 +187,7 @@ fetchChannelConfig() {
 
   echo "Fetching the most recent configuration block for the channel"
   set -x
-  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch config config_block.pb -o ${ORDERER_ADDRESS} -c $CHANNEL --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -214,7 +219,7 @@ handleAddNewPeerOrg() {
   export FABRIC_CFG_PATH=$PWD
   sed -e "s/{ORG_NAME}/${PEER_ORG_NAME}/g" /var/hyperledger/consortiumScripts/configtx-template.yaml > ./configtx.yaml
 
-  configtxgen -printOrg ${PEER_ORG_NAME}MSP > ${PEER_ORG_NAME}.json 2> $LOG_FILE
+  configtxgen -printOrg ${PEER_ORG_NAME} > ${PEER_ORG_NAME}.json 2> $LOG_FILE
   res=$?
   verifyResult $res "Failed to generate ${PEER_ORG_NAME} config material"
   )
@@ -227,7 +232,7 @@ handleAddNewPeerOrg() {
 
 
   # Modify the configuration to append the new org
-  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"SampleConsortium\": {\"groups\": {\"${PEER_ORG_NAME}MSP\":.[1]}}}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
+  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"SampleConsortium\": {\"groups\": {\"${PEER_ORG_NAME}\":.[1]}}}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
   res=$?
   verifyResult $res "Failed to create new confguration block"
 
@@ -245,7 +250,7 @@ handleAddNewPeerOrg() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -302,7 +307,7 @@ channelCreate() {
   setPeerGlobals 1
   ORDERER_TLS_CA="/var/hyperledger/peer/msp/tlscacerts/ca.crt"
   set -x
-  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA &> $LOG_FILE
+  peer channel create -o $ORDERER_ADDRESS -c $CHANNEL_NAME -f ./channel.tx --tls --cafile $ORDERER_TLS_CA --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   verifyResult $res "Channel creation failed"
@@ -384,7 +389,7 @@ joinNodesInChannel() {
   ORDERER_TLS_CA="/tmp/hlf/orderer/tlscacerts/ca.crt"
   setPeerGlobals 1
   set -x
-  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_ADDRESS} -c $CHANNEL_NAME --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE
@@ -568,7 +573,7 @@ addPeerInChannel() {
   export FABRIC_CFG_PATH=$PWD
   sed -e "s/{ORG_NAME}/${PEER_ORG_NAME}/g" /var/hyperledger/consortiumScripts/configtx-template.yaml > ./configtx.yaml
 
-  configtxgen -printOrg ${PEER_ORG_NAME}MSP > ${PEER_ORG_NAME}.json 2> $LOG_FILE
+  configtxgen -printOrg ${PEER_ORG_NAME} > ${PEER_ORG_NAME}.json 2> $LOG_FILE
   res=$?
   verifyResult $res "Failed to generate ${PEER_ORG_NAME} config material in JOSN format"
   )
@@ -583,7 +588,7 @@ addPeerInChannel() {
 
 
   # Modify the configuration to append the new org
-  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${PEER_ORG_NAME}MSP\":.[1]}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
+  jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${PEER_ORG_NAME}\":.[1]}}}}}" config.json ${PEER_ORG_NAME}.json > modified_config.json
   res=$?
   verifyResult $res "Failed to generate new configuration block"
 
@@ -601,7 +606,7 @@ addPeerInChannel() {
   echo "========= Submitting transaction from orderer admin which signs it as well ========= "
   echo
   set -x
-  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} &> $LOG_FILE
+  peer channel update -f ${PEER_ORG_NAME}_update_in_envelope.pb -c ${CHANNEL_NAME} -o ${ORDERER_ADDRESS} --tls --cafile ${ORDERER_TLS_CA} --clientauth --certfile $ADMIN_TLS_CERTFILE --keyfile $ADMIN_TLS_KEYFILE &> $LOG_FILE
   res=$?
   set +x
   cat $LOG_FILE

@@ -93,9 +93,14 @@ async function main() {
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: userId});
 
-        const orgMSP = orgName + 'MSP'
+        const orgMSPID = orgName;
         const client = gateway.getClient();
-        const peers = client.getPeersForOrg(orgMSP);
+
+        // Set client TLS certificate and key for mutual TLS
+        const userTlsCert = await wallet.export(userId+'-tls');
+        client.setTlsClientCertAndKey(userTlsCert.certificate, userTlsCert.privateKey);
+
+        const peers = client.getPeersForOrg(orgMSPID);
 
         let installResponse = await client.installChaincode({
            targets: peers,

@@ -49,7 +49,7 @@ async function main() {
         }
 
         // Check to see if we've already enrolled the admin user.
-	const adminId  = 'admin.' + orgName;
+        const adminId  = 'admin.' + orgName;
         const adminExists = await wallet.exists(adminId);
         if (!adminExists) {
             console.log('An identity for admin user ' + adminId + ' does not exist in the wallet');
@@ -66,12 +66,17 @@ async function main() {
         const adminIdentity = gateway.getCurrentIdentity();
 
         // Register the user, enroll the user, and import the new identity into the wallet.
-        const secret = await ca.register({ enrollmentID: userId, role: 'client' }, adminIdentity);
-        const enrollment = await ca.enroll({ enrollmentID: userId, enrollmentSecret: secret });
-        const userIdentity = X509WalletMixin.createIdentity(ccp.organizations[orgName].mspid, enrollment.certificate, enrollment.key.toBytes());
+        var secret = await ca.register({ enrollmentID: userId, role: 'client' }, adminIdentity);
+        var enrollment = await ca.enroll({ enrollmentID: userId, enrollmentSecret: secret });
+        var userIdentity = X509WalletMixin.createIdentity(ccp.organizations[orgName].mspid, enrollment.certificate, enrollment.key.toBytes());
         await wallet.import(userId, userIdentity);
         console.log('Successfully registered and enrolled user \'' + userId + '\' and imported it into the wallet');
 
+        secret = await ca.register({ enrollmentID: userId+'.tls', role: 'client' }, adminIdentity);
+        enrollment = await ca.enroll({ enrollmentID: userId+'.tls', enrollmentSecret: secret });
+        userIdentity = X509WalletMixin.createIdentity(ccp.organizations[orgName].mspid, enrollment.certificate, enrollment.key.toBytes());
+        await wallet.import(userId+'-tls', userIdentity);
+        console.log('Successfully registered and enrolled user \'' + userId + '\' TLS certificate and imported it into the wallet');
     } catch (error) {
         console.error('Failed to register user: ' + error);
         process.exit(1);
